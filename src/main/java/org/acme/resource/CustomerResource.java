@@ -1,6 +1,5 @@
-package org.acme.ressource;
+package org.acme.resource;
 
-import org.acme.model.Article;
 import org.acme.model.Customer;
 
 import javax.transaction.Transactional;
@@ -8,7 +7,7 @@ import javax.ws.rs.*;
 import java.util.List;
 
 @Path("/customer")
-public class CustomerRessource {
+public class CustomerResource {
 
     @GET
     @Path("{id}")

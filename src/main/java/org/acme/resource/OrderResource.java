@@ -1,4 +1,4 @@
-package org.acme.ressource;
+package org.acme.resource;
 
 import org.acme.model.Order;
 
@@ -7,7 +7,7 @@ import javax.ws.rs.*;
 import java.util.List;
 
 @Path("/order")
-public class OrderRessource {
+public class OrderResource {
 
     @GET
     @Path("{id}")

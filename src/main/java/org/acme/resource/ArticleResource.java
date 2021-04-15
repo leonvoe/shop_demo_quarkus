@@ -1,19 +1,13 @@
-package org.acme.ressource;
+package org.acme.resource;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import org.acme.model.Article;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/article")
-public class ArticleRessource {
+public class ArticleResource {
 
     @GET
     @Path("{id}")
