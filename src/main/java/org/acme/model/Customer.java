@@ -3,17 +3,23 @@ package org.acme.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Customer extends PanacheEntity {
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id", scope = Customer.class)
+public class Customer extends PanacheEntityBase {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
     private String first_name;
     private String last_name;
     private String username;
@@ -24,7 +30,7 @@ public class Customer extends PanacheEntity {
     private List<Order> orders;
 
 
-    public Customer(long id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders) {
+    public Customer(Long id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -38,11 +44,11 @@ public class Customer extends PanacheEntity {
     public Customer() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
