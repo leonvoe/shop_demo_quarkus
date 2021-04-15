@@ -2,13 +2,16 @@ package org.acme.model;
 
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Article {
+public class Article extends PanacheEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     private String name;
     private String description;

@@ -2,14 +2,16 @@ package org.acme.model;
 
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
-public class Order extends BaseEntity{
+public class Order extends PanacheEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Shipping shipping;
     private String notes;

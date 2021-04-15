@@ -3,14 +3,16 @@ package org.acme.model;
 
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Customer extends BaseEntity{
+public class Customer extends PanacheEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String first_name;
     private String last_name;
