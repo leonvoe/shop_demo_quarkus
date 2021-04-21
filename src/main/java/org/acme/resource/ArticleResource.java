@@ -1,7 +1,9 @@
 package org.acme.resource;
 
 import org.acme.model.Article;
+import org.acme.service.ArticleService;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import java.util.List;
@@ -9,24 +11,27 @@ import java.util.List;
 @Path("/article")
 public class ArticleResource {
 
+    @Inject
+    ArticleService articleService;
+
     @GET
     @Path("{id}")
     @Produces("application/json")
     public Article findById(@PathParam("id")Long id) {
-        return Article.findById(id);
+        return articleService.getArticleById(id);
     }
 
     @GET
     @Produces("application/json")
     public List<Article> findAll() {
-        return Article.listAll();
+        return articleService.getAllArticles();
     }
 
     @POST
     @Transactional
     @Consumes("application/json")
     public void insertArticle(Article article) {
-        Article.persist(article);
+        articleService.insertArticle(article);
     }
 
     @DELETE
@@ -34,7 +39,7 @@ public class ArticleResource {
     @Path("{id}")
     @Consumes("application/json")
     public void deleteArticle(@PathParam("id") Long id) {
-        Article.deleteById(id);
+        articleService.deleteArticle(id);
     }
 
     @PUT
@@ -42,7 +47,7 @@ public class ArticleResource {
     @Path("{id}")
     @Consumes("application/json")
     public void updateArticle(@PathParam("id") Long id, Article newArticle) {
-        //
+        articleService.updateArticle(id, newArticle);
     }
 
 
