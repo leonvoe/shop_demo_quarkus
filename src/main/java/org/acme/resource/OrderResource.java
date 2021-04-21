@@ -1,5 +1,6 @@
 package org.acme.resource;
 
+import org.acme.dto.OrderDTO;
 import org.acme.model.Order;
 import org.acme.service.OrderService;
 
@@ -17,13 +18,13 @@ public class OrderResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Order findById(@PathParam("id")Long id) {
+    public OrderDTO findById(@PathParam("id")Long id) {
         return orderService.getOrderById(id);
     }
 
     @GET
     @Produces("application/json")
-    public List<Order> findAll() {
+    public List<OrderDTO> findAll() {
         return orderService.getAllOrders();
     }
 
