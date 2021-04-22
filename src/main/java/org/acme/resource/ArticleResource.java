@@ -1,5 +1,6 @@
 package org.acme.resource;
 
+import org.acme.dto.ArticleDTO;
 import org.acme.model.Article;
 import org.acme.service.ArticleService;
 
@@ -17,21 +18,21 @@ public class ArticleResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Article findById(@PathParam("id")Long id) {
+    public ArticleDTO findById(@PathParam("id")Long id) {
         return articleService.getArticleById(id);
     }
 
     @GET
     @Produces("application/json")
-    public List<Article> findAll() {
+    public List<ArticleDTO> findAll() {
         return articleService.getAllArticles();
     }
 
     @POST
     @Transactional
     @Consumes("application/json")
-    public void insertArticle(Article article) {
-        articleService.insertArticle(article);
+    public void insertArticle(ArticleDTO articleDTO) {
+        articleService.insertArticle(articleDTO);
     }
 
     @DELETE
@@ -46,7 +47,7 @@ public class ArticleResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateArticle(@PathParam("id") Long id, Article newArticle) {
+    public void updateArticle(@PathParam("id") Long id, ArticleDTO newArticle) {
         articleService.updateArticle(id, newArticle);
     }
 

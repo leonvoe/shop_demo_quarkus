@@ -1,5 +1,6 @@
 package org.acme.resource;
 
+import org.acme.dto.OrderDTO;
 import org.acme.model.Order;
 import org.acme.service.OrderService;
 
@@ -17,21 +18,21 @@ public class OrderResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Order findById(@PathParam("id")Long id) {
+    public OrderDTO findById(@PathParam("id")Long id) {
         return orderService.getOrderById(id);
     }
 
     @GET
     @Produces("application/json")
-    public List<Order> findAll() {
+    public List<OrderDTO> findAll() {
         return orderService.getAllOrders();
     }
 
     @POST
     @Transactional
     @Consumes("application/json")
-    public void insertOrder(Order order) {
-        orderService.insertOrder(order);
+    public void insertOrder(OrderDTO orderDTO) {
+        orderService.insertOrder(orderDTO);
     }
 
     @DELETE
@@ -46,7 +47,7 @@ public class OrderResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateOrder(@PathParam("id") Long id, Order newOrder) {
-        orderService.updateOrder(id, newOrder);
+    public void updateOrder(@PathParam("id") Long id, OrderDTO newOrderDTO) {
+        orderService.updateOrder(id, newOrderDTO);
     }
 }

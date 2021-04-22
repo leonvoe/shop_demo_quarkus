@@ -1,5 +1,6 @@
 package org.acme.resource;
 
+import org.acme.dto.CustomerDTO;
 import org.acme.model.Customer;
 import org.acme.service.CustomerService;
 
@@ -17,21 +18,21 @@ public class CustomerResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Customer findById(@PathParam("id")Long id) {
+    public CustomerDTO findById(@PathParam("id")Long id) {
         return customerService.getCustomerById(id);
     }
 
     @GET
     @Produces("application/json")
-    public List<Customer> findAll() {
+    public List<CustomerDTO> findAll() {
         return customerService.getAllCustomers();
     }
 
     @POST
     @Transactional
     @Consumes("application/json")
-    public void insertCustomer(Customer customer) {
-        customerService.insertCustomer(customer);
+    public void insertCustomer(CustomerDTO customerDTO) {
+        customerService.insertCustomer(customerDTO);
     }
 
     @DELETE
@@ -46,8 +47,8 @@ public class CustomerResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateCustomer(@PathParam("id") Long id, Customer newCustomer) {
-        customerService.updateCustomer(id, newCustomer);
+    public void updateCustomer(@PathParam("id") Long id, CustomerDTO newCustomerDTO) {
+        customerService.updateCustomer(id, newCustomerDTO);
     }
 
 
