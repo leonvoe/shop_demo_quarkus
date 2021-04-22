@@ -31,8 +31,8 @@ public class OrderResource {
     @POST
     @Transactional
     @Consumes("application/json")
-    public void insertOrder(Order order) {
-        orderService.insertOrder(order);
+    public void insertOrder(OrderDTO orderDTO) {
+        orderService.insertOrder(orderDTO);
     }
 
     @DELETE
@@ -47,7 +47,7 @@ public class OrderResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateOrder(@PathParam("id") Long id, Order newOrder) {
-        orderService.updateOrder(id, newOrder);
+    public void updateOrder(@PathParam("id") Long id, OrderDTO newOrderDTO) {
+        orderService.updateOrder(id, newOrderDTO);
     }
 }

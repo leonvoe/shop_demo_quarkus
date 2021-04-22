@@ -6,8 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "cdi")
-public interface ArticleMapper {
-    @Mapping(target = "name", source = "name")
+public interface ArticleDTOMapper {
     ArticleDTO toResource(Article article);
 
 }

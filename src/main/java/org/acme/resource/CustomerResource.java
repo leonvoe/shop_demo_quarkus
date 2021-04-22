@@ -31,8 +31,8 @@ public class CustomerResource {
     @POST
     @Transactional
     @Consumes("application/json")
-    public void insertCustomer(Customer customer) {
-        customerService.insertCustomer(customer);
+    public void insertCustomer(CustomerDTO customerDTO) {
+        customerService.insertCustomer(customerDTO);
     }
 
     @DELETE
@@ -47,8 +47,8 @@ public class CustomerResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateCustomer(@PathParam("id") Long id, Customer newCustomer) {
-        customerService.updateCustomer(id, newCustomer);
+    public void updateCustomer(@PathParam("id") Long id, CustomerDTO newCustomerDTO) {
+        customerService.updateCustomer(id, newCustomerDTO);
     }
 
 

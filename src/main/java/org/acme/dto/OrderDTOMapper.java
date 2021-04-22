@@ -1,10 +1,11 @@
 package org.acme.dto;
 
+
 import org.acme.model.Customer;
+import org.acme.model.Order;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "cdi")
-public interface CustomerMapper {
-    CustomerDTO toResource(Customer customer);
+public interface OrderDTOMapper {
+    OrderDTO toResource(Order order);
 }

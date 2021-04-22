@@ -1,11 +1,10 @@
 package org.acme.service;
 
-import org.acme.dto.ArticleDTO;
 import org.acme.dto.CustomerDTO;
-import org.acme.dto.CustomerMapper;
+import org.acme.dto.CustomerDTOMapper;
+import org.acme.dto.CustomerEntityMapper;
 import org.acme.model.Article;
 import org.acme.model.Customer;
-import org.acme.model.Order;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,10 +14,13 @@ import java.util.List;
 @ApplicationScoped
 public class CustomerService {
     @Inject
-    CustomerMapper customerMapper;
+    CustomerDTOMapper customerDTOMapper;
+
+    @Inject
+    CustomerEntityMapper customerEntityMapper;
 
     public CustomerDTO getCustomerById(Long id) {
-        return customerMapper.toResource(Customer.findById(id));
+        return customerDTOMapper.toResource(Customer.findById(id));
     }
 
     public List<CustomerDTO> getAllCustomers() {
@@ -27,21 +29,21 @@ public class CustomerService {
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 
         for(int i = 0; i < Article.count() - 1; i++) {
-            customerDTOList.add(customerMapper.toResource(customersList.get(i)));
+            customerDTOList.add(customerDTOMapper.toResource(customersList.get(i)));
         }
 
         return customerDTOList;
     }
 
-    public void insertCustomer(Customer customer) {
-        Customer.persist(customer);
+    public void insertCustomer(CustomerDTO customerDTO) {
+        Customer.persist(customerEntityMapper.toResource(customerDTO));
     }
 
     public void deleteCustomer(Long id) {
         Customer.deleteById(id);
     }
 
-    public void updateCustomer(Long id, Customer newCustomer) {
+    public void updateCustomer(Long id, CustomerDTO newCustomerDTO) {
         //
     }
 }
