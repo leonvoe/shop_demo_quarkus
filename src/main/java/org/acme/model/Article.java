@@ -6,26 +6,23 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.mongodb.panache.MongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id", scope = Article.class)
-public class Article extends PanacheEntityBase {
+@MongoEntity
+public class Article extends PanacheMongoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public String id;
     private String name;
     private String description;
     private Category category;
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "articles")
     private List<Order> orders;
 
-    public Article(Long id, String name, String description, Category category, List<Order> orders) {
+    public Article(String id, String name, String description, Category category, List<Order> orders) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -36,11 +33,11 @@ public class Article extends PanacheEntityBase {
     public Article() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

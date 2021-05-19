@@ -2,38 +2,24 @@ package org.acme.model;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.mongodb.panache.MongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "orders")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id", scope = Order.class)
-public class Order extends PanacheEntityBase {
+@MongoEntity
+public class Order extends PanacheMongoEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public String id;
     private Shipping shipping;
     private String notes;
     private Status status = Status.INPROGRESS;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id")
     private Customer customer;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "order_article",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "article_id"))
     private List<Article> articles;
 
 
-    public Order(Long id, Shipping shipping, String notes, Status status, Customer customer, List<Article> articles) {
+    public Order(String id, Shipping shipping, String notes, Status status, Customer customer, List<Article> articles) {
         this.id = id;
         this.shipping = shipping;
         this.notes = notes;
@@ -45,11 +31,11 @@ public class Order extends PanacheEntityBase {
     public Order() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
