@@ -4,6 +4,7 @@ package org.acme.model;
 
 import io.quarkus.mongodb.panache.MongoEntity;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
+import org.bson.types.ObjectId;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @MongoEntity
 public class Order extends PanacheMongoEntity {
     @Id
-    public String id;
+    public ObjectId id;
     private Shipping shipping;
     private String notes;
     private Status status = Status.INPROGRESS;
@@ -19,7 +20,7 @@ public class Order extends PanacheMongoEntity {
     private List<Article> articles;
 
 
-    public Order(String id, Shipping shipping, String notes, Status status, Customer customer, List<Article> articles) {
+    public Order(ObjectId id, Shipping shipping, String notes, Status status, Customer customer, List<Article> articles) {
         this.id = id;
         this.shipping = shipping;
         this.notes = notes;
@@ -31,11 +32,11 @@ public class Order extends PanacheMongoEntity {
     public Order() {
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

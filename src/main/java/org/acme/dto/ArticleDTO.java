@@ -2,17 +2,28 @@ package org.acme.dto;
 
 import org.acme.model.Category;
 import org.acme.model.Order;
+import org.bson.types.ObjectId;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import java.util.List;
 
 public class ArticleDTO {
+    private ObjectId id;
     private String name;
     private String description;
     private Category category;
 
-    public ArticleDTO(String name, String description, Category category) {
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public ArticleDTO(ObjectId id, String name, String description, Category category) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.category = category;

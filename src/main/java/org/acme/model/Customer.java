@@ -5,6 +5,7 @@ package org.acme.model;
 
 import io.quarkus.mongodb.panache.MongoEntity;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
+import org.bson.types.ObjectId;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.util.List;
 @MongoEntity
 public class Customer extends PanacheMongoEntity {
     @Id
-    public String id;
+    public ObjectId id;
     private String first_name;
     private String last_name;
     private String username;
@@ -23,7 +24,7 @@ public class Customer extends PanacheMongoEntity {
     private List<Order> orders;
 
 
-    public Customer(String id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders) {
+    public Customer(ObjectId id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -37,11 +38,11 @@ public class Customer extends PanacheMongoEntity {
     public Customer() {
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
