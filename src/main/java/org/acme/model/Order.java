@@ -4,9 +4,11 @@ package org.acme.model;
 
 import io.quarkus.mongodb.panache.MongoEntity;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.List;
 
 @MongoEntity

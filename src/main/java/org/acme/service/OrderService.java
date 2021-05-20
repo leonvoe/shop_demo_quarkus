@@ -5,6 +5,7 @@ import org.acme.dto.OrderDTOMapper;
 import org.acme.dto.OrderEntityMapper;
 import org.acme.model.Article;
 import org.acme.model.Order;
+import org.bson.types.ObjectId;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ public class OrderService {
     OrderEntityMapper orderEntityMapper;
 
 
-    public OrderDTO getOrderById(Long id) {
+    public OrderDTO getOrderById(ObjectId id) {
         return orderDTOMapper.toResource(Order.findById(id));
     }
 
@@ -28,7 +29,7 @@ public class OrderService {
         orderList.addAll(Order.listAll());
         List<OrderDTO> orderDTOList = new ArrayList<>();
 
-        for(int i = 0; i < Article.count() - 1; i++) {
+        for(int i = 0; i < Order.count() - 1; i++) {
             orderDTOList.add(orderDTOMapper.toResource(orderList.get(i)));
         }
 
@@ -39,11 +40,11 @@ public class OrderService {
         Order.persist(orderEntityMapper.toResource(orderDTO));
     }
 
-    public void deleteOrder(Long id) {
+    public void deleteOrder(ObjectId id) {
         Order.deleteById(id);
     }
 
-    public void updateOrder(Long id, OrderDTO newOrderDTO) {
+    public void updateOrder(ObjectId id, OrderDTO newOrderDTO) {
         //
     }
 

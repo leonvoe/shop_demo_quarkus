@@ -6,7 +6,7 @@ import io.quarkus.mongodb.panache.MongoEntity;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.List;
 
 @MongoEntity
@@ -30,7 +30,7 @@ public class Article extends PanacheMongoEntity {
     public Article() {
     }
 
-    public ObjectId getId() {
+    public Object getId() {
         return id;
     }
 

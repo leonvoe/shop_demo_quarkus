@@ -5,6 +5,7 @@ import org.acme.dto.CustomerDTOMapper;
 import org.acme.dto.CustomerEntityMapper;
 import org.acme.model.Article;
 import org.acme.model.Customer;
+import org.bson.types.ObjectId;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ public class CustomerService {
     @Inject
     CustomerEntityMapper customerEntityMapper;
 
-    public CustomerDTO getCustomerById(Long id) {
+    public CustomerDTO getCustomerById(ObjectId id) {
         return customerDTOMapper.toResource(Customer.findById(id));
     }
 
@@ -28,7 +29,7 @@ public class CustomerService {
         customersList.addAll(Customer.listAll());
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 
-        for(int i = 0; i < Article.count() - 1; i++) {
+        for(int i = 0; i < Customer.count() - 1; i++) {
             customerDTOList.add(customerDTOMapper.toResource(customersList.get(i)));
         }
 
@@ -39,11 +40,11 @@ public class CustomerService {
         Customer.persist(customerEntityMapper.toResource(customerDTO));
     }
 
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(ObjectId id) {
         Customer.deleteById(id);
     }
 
-    public void updateCustomer(Long id, CustomerDTO newCustomerDTO) {
+    public void updateCustomer(ObjectId id, CustomerDTO newCustomerDTO) {
         //
     }
 }

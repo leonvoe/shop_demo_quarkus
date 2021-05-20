@@ -5,6 +5,7 @@ import org.acme.dto.ArticleDTO;
 import org.acme.dto.ArticleDTOMapper;
 import org.acme.dto.ArticleEntityMapper;
 import org.acme.model.Article;
+import org.bson.types.ObjectId;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,7 +21,7 @@ public class ArticleService {
     @Inject
     ArticleEntityMapper articleEntityMapper;
 
-    public ArticleDTO getArticleById(Long id) {
+    public ArticleDTO getArticleById(ObjectId id) {
         return articleDTOMapper.toResource(Article.findById(id));
     }
 
@@ -41,11 +42,11 @@ public class ArticleService {
         Article.persist(articleEntityMapper.toResource(articleDTO));
     }
 
-    public void deleteArticle(Long id) {
+    public void deleteArticle(ObjectId id) {
         Article.deleteById(id);
     }
 
-    public void updateArticle(Long id, ArticleDTO newArticleDTO) {
+    public void updateArticle(ObjectId id, ArticleDTO newArticleDTO) {
         //
     }
 }

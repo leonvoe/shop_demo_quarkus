@@ -3,6 +3,7 @@ package org.acme.resource;
 import org.acme.dto.OrderDTO;
 import org.acme.model.Order;
 import org.acme.service.OrderService;
+import org.bson.types.ObjectId;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -18,8 +19,8 @@ public class OrderResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public OrderDTO findById(@PathParam("id")Long id) {
-        return orderService.getOrderById(id);
+    public OrderDTO findById(@PathParam("id")String id) {
+        return orderService.getOrderById(new ObjectId(id));
     }
 
     @GET
@@ -39,15 +40,15 @@ public class OrderResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void deleteOrder(@PathParam("id") Long id) {
-        orderService.deleteOrder(id);
+    public void deleteOrder(@PathParam("id") String id) {
+        orderService.deleteOrder(new ObjectId(id));
     }
 
     @PUT
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateOrder(@PathParam("id") Long id, OrderDTO newOrderDTO) {
-        orderService.updateOrder(id, newOrderDTO);
+    public void updateOrder(@PathParam("id") String id, OrderDTO newOrderDTO) {
+        orderService.updateOrder(new ObjectId(id), newOrderDTO);
     }
 }

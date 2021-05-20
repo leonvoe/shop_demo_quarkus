@@ -7,7 +7,7 @@ import io.quarkus.mongodb.panache.MongoEntity;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.List;
 

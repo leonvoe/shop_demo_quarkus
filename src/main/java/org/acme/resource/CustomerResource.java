@@ -3,6 +3,7 @@ package org.acme.resource;
 import org.acme.dto.CustomerDTO;
 import org.acme.model.Customer;
 import org.acme.service.CustomerService;
+import org.bson.types.ObjectId;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -18,8 +19,8 @@ public class CustomerResource {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public CustomerDTO findById(@PathParam("id")Long id) {
-        return customerService.getCustomerById(id);
+    public CustomerDTO findById(@PathParam("id") String id) {
+        return customerService.getCustomerById(new ObjectId(id));
     }
 
     @GET
@@ -39,16 +40,16 @@ public class CustomerResource {
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void deleteCustomer(@PathParam("id") Long id) {
-        customerService.deleteCustomer(id);
+    public void deleteCustomer(@PathParam("id") String id) {
+        customerService.deleteCustomer(new ObjectId(id));
     }
 
     @PUT
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
-    public void updateCustomer(@PathParam("id") Long id, CustomerDTO newCustomerDTO) {
-        customerService.updateCustomer(id, newCustomerDTO);
+    public void updateCustomer(@PathParam("id") String id, CustomerDTO newCustomerDTO) {
+        customerService.updateCustomer(new ObjectId(id), newCustomerDTO);
     }
 
 
