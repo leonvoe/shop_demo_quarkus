@@ -18,7 +18,7 @@ public class Startup {
     @Transactional
     public void loadUsers(@Observes StartupEvent evt) {
         // reset and load all test users
-        Customer.deleteAll();
         customerService.insertCustomer(new CustomerDTO("admin", "admin", "admin", "admin", LocalDate.now(), Gender.DIVERSE, "admin"));
+        customerService.insertCustomer(new CustomerDTO("user", "user", "user", "user", LocalDate.now(), Gender.DIVERSE, "user"));
     }
 }

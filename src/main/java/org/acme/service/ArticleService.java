@@ -29,7 +29,7 @@ public class ArticleService {
         articlesList.addAll(Article.listAll());
         List<ArticleDTO> articleDTOList = new ArrayList<>();
 
-        for(int i = 0; i < Article.count() - 1; i++) {
+        for(int i = 0; i < Article.count(); i++) {
             articleDTOList.add(articleDTOMapper.toResource(articlesList.get(i)));
         }
 

@@ -1,7 +1,6 @@
 package org.acme.resource;
 
 import org.acme.dto.CustomerDTO;
-import org.acme.model.Customer;
 import org.acme.service.CustomerService;
 
 import javax.annotation.security.PermitAll;
@@ -43,7 +42,7 @@ public class CustomerResource {
     @DELETE
     @Transactional
     @Path("{id}")
-    @RolesAllowed("user")
+    @RolesAllowed("admin")
     @Consumes("application/json")
     public void deleteCustomer(@PathParam("id") Long id) {
         customerService.deleteCustomer(id);

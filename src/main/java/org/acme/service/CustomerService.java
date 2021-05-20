@@ -28,7 +28,7 @@ public class CustomerService {
         customersList.addAll(Customer.listAll());
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 
-        for(int i = 0; i < Customer.count() - 1; i++) {
+        for(int i = 0; i < Customer.count(); i++) {
             customerDTOList.add(customerDTOMapper.toResource(customersList.get(i)));
         }
 

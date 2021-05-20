@@ -1,9 +1,9 @@
 package org.acme.dto;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import org.acme.model.Gender;
-import org.acme.model.Order;
+
 import java.time.LocalDate;
-import java.util.List;
 
 public class CustomerDTO {
     private String first_name;
@@ -56,7 +56,7 @@ public class CustomerDTO {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = BcryptUtil.bcryptHash(password);
     }
 
     public LocalDate getDob() {
