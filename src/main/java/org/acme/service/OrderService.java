@@ -28,7 +28,7 @@ public class OrderService {
         orderList.addAll(Order.listAll());
         List<OrderDTO> orderDTOList = new ArrayList<>();
 
-        for(int i = 0; i < Article.count() - 1; i++) {
+        for(int i = 0; i < Order.count() - 1; i++) {
             orderDTOList.add(orderDTOMapper.toResource(orderList.get(i)));
         }
 
