@@ -5,8 +5,13 @@ package org.acme.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.security.jpa.Password;
+import io.quarkus.security.jpa.Roles;
+import io.quarkus.security.jpa.UserDefinition;
+import io.quarkus.security.jpa.Username;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,29 +21,36 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id", scope = Customer.class)
+@UserDefinition
 public class Customer extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     private String first_name;
     private String last_name;
+    @Username
     private String username;
+    @Password
     private String password;
     private LocalDate dob;
     private Gender gender;
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Order> orders;
+    @Roles
+    public String role;
 
 
-    public Customer(Long id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders) {
+
+    public Customer(Long id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, List<Order> orders, String role) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
-        this.password = password;
+        this.password = BcryptUtil.bcryptHash(password);
         this.dob = dob;
         this.gender = gender;
         this.orders = orders;
+        this.role = role;
     }
 
     public Customer() {
@@ -73,7 +85,7 @@ public class Customer extends PanacheEntityBase {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = BcryptUtil.bcryptHash(password);
     }
 
     public String getPassword() {
@@ -106,5 +118,13 @@ public class Customer extends PanacheEntityBase {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

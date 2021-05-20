@@ -4,6 +4,7 @@ import org.acme.dto.OrderDTO;
 import org.acme.model.Order;
 import org.acme.service.OrderService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -16,6 +17,7 @@ public class OrderResource {
     OrderService orderService;
 
     @GET
+    @RolesAllowed("user")
     @Path("{id}")
     @Produces("application/json")
     public OrderDTO findById(@PathParam("id")Long id) {
@@ -23,12 +25,14 @@ public class OrderResource {
     }
 
     @GET
+    @RolesAllowed("user")
     @Produces("application/json")
     public List<OrderDTO> findAll() {
         return orderService.getAllOrders();
     }
 
     @POST
+    @RolesAllowed("user")
     @Transactional
     @Consumes("application/json")
     public void insertOrder(OrderDTO orderDTO) {
@@ -36,6 +40,7 @@ public class OrderResource {
     }
 
     @DELETE
+    @RolesAllowed("user")
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
@@ -44,6 +49,7 @@ public class OrderResource {
     }
 
     @PUT
+    @RolesAllowed("user")
     @Transactional
     @Path("{id}")
     @Consumes("application/json")

@@ -4,6 +4,8 @@ import org.acme.dto.ArticleDTO;
 import org.acme.model.Article;
 import org.acme.service.ArticleService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -16,6 +18,7 @@ public class ArticleResource {
     ArticleService articleService;
 
     @GET
+    @PermitAll
     @Path("{id}")
     @Produces("application/json")
     public ArticleDTO findById(@PathParam("id")Long id) {
@@ -23,12 +26,14 @@ public class ArticleResource {
     }
 
     @GET
+    @PermitAll
     @Produces("application/json")
     public List<ArticleDTO> findAll() {
         return articleService.getAllArticles();
     }
 
     @POST
+    @RolesAllowed("admin")
     @Transactional
     @Consumes("application/json")
     public void insertArticle(ArticleDTO articleDTO) {
@@ -36,6 +41,7 @@ public class ArticleResource {
     }
 
     @DELETE
+    @RolesAllowed("admin")
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
@@ -44,6 +50,7 @@ public class ArticleResource {
     }
 
     @PUT
+    @RolesAllowed("admin")
     @Transactional
     @Path("{id}")
     @Consumes("application/json")
