@@ -56,7 +56,7 @@ public class CustomerDTO {
     }
 
     public void setPassword(String password) {
-        this.password = BcryptUtil.bcryptHash(password);
+        this.password = password;
     }
 
     public LocalDate getDob() {

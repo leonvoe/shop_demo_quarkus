@@ -12,6 +12,7 @@ import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +46,7 @@ public class Customer extends PanacheEntityBase {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
-        this.password = BcryptUtil.bcryptHash(password);
+        this.password = password;
         this.dob = dob;
         this.gender = gender;
         this.orders = orders;
