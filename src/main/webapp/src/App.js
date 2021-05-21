@@ -3,7 +3,7 @@ import './App.css';
 import React, {Component} from 'react';
 import Customers from './components/customers'
 
-class App extends Component {
+/*class App extends Component {
   state = {
     customers: []
   }
@@ -22,6 +22,16 @@ class App extends Component {
       <Customers customers={this.state.customers} />
     );
   }
+}*/
+
+
+function App() {
+    return (
+    <div className="App">
+        <h1>Hello to React</h1>
+        <h2>Hello</h2>
+    </div>
+    )
 }
 
 export default App;

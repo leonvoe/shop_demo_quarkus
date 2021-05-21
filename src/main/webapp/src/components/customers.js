@@ -4,7 +4,7 @@ const Customers = ({ customers }) => {
     return (
         <div>
             <center><h1>Customers List</h1></center>
-            <table class="pf-c-table pf-m-grid-md" role="grid" aria-label="Supersonic Subatomic Particles" id="table-basic">
+            <table class="pf-c-table pf-m-grid-md" role="grid" aria-label="List of all customers" id="table-basic">
                 <caption>Supersonic Subatomic Particles</caption>
                 <thead>
                     <tr role="row">
@@ -22,7 +22,6 @@ const Customers = ({ customers }) => {
                 ))}
             </table>
         </div>
-
     )
 };
 
