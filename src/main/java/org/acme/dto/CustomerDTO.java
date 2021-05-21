@@ -1,9 +1,9 @@
 package org.acme.dto;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import org.acme.model.Gender;
-import org.acme.model.Order;
+
 import java.time.LocalDate;
-import java.util.List;
 
 public class CustomerDTO {
     private String first_name;
@@ -12,14 +12,16 @@ public class CustomerDTO {
     private String password;
     private LocalDate dob;
     private Gender gender;
+    private String role;
 
-    public CustomerDTO(String first_name, String last_name, String username, String password, LocalDate dob, Gender gender) {
+    public CustomerDTO(String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, String role) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
         this.password = password;
         this.dob = dob;
         this.gender = gender;
+        this.role = role;
     }
 
     public CustomerDTO() {
@@ -71,5 +73,13 @@ public class CustomerDTO {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
