@@ -2,11 +2,11 @@ package org.acme.model;
 
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
@@ -94,6 +94,7 @@ public class Customer extends PanacheEntityBase {
 
     public void setPassword(String password) {
         this.password = BcryptUtil.bcryptHash(password);
+        //this.password = password;
     }
 
     public LocalDate getDob() {
