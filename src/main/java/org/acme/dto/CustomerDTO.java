@@ -6,6 +6,7 @@ import org.acme.model.Gender;
 import java.time.LocalDate;
 
 public class CustomerDTO {
+    private Long id;
     private String first_name;
     private String last_name;
     private String username;
@@ -14,7 +15,8 @@ public class CustomerDTO {
     private Gender gender;
     private String role;
 
-    public CustomerDTO(String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, String role) {
+    public CustomerDTO(Long id, String first_name, String last_name, String username, String password, LocalDate dob, Gender gender, String role) {
+        this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -25,6 +27,14 @@ public class CustomerDTO {
     }
 
     public CustomerDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirst_name() {
