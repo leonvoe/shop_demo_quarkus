@@ -1,16 +1,12 @@
 package org.acme.model;
-
-
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.quarkus.elytron.security.common.BcryptUtil;
+/*import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
-import io.quarkus.security.jpa.Username;
+import io.quarkus.security.jpa.Username;*/
 
 
 import javax.persistence.*;
@@ -21,22 +17,22 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id", scope = Customer.class)
-@UserDefinition
+//@UserDefinition
 public class Customer extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     private String first_name;
     private String last_name;
-    @Username
+    //@Username
     private String username;
-    @Password
+    //@Password
     private String password;
     private LocalDate dob;
     private Gender gender;
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Order> orders;
-    @Roles
+    //@Roles
     public String role;
 
 
@@ -93,8 +89,8 @@ public class Customer extends PanacheEntityBase {
     }
 
     public void setPassword(String password) {
-        this.password = BcryptUtil.bcryptHash(password);
-        //this.password = password;
+        //this.password = BcryptUtil.bcryptHash(password);
+        this.password = password;
     }
 
     public LocalDate getDob() {

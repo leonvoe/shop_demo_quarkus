@@ -87,10 +87,10 @@
       <artifactId>guava</artifactId>
     </dependency>
 
-    <dependency>
+    <!--<dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-security-jpa</artifactId>
-    </dependency>
+    </dependency>-->
 
   </dependencies>
   <build>
