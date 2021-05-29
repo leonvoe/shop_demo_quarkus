@@ -6,12 +6,6 @@ import * as VscIcons from "react-icons/vsc";
 
 export const SidebarData = [
   {
-    title: "Home",
-    path: "/",
-    icon: <AiIcons.AiFillHome />,
-    className: "nav-text",
-  },
-  {
     title: "Customers",
     path: "/customers",
     icon: <BsIcons.BsPersonBoundingBox />,
