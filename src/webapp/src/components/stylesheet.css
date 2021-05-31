@@ -1,0 +1,14 @@
+.pf-c-page__sidebar-body {
+  margin-bottom: 154%;
+}
+
+#page {
+  background-color: white;
+}
+
+.pf-c-page__header-brand-link {
+  text-decoration: none;
+  color: white;
+  font-size: 2rem;
+  margin-left: 0.9rem;
+}
