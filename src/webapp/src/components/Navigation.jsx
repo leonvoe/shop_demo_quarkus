@@ -1,6 +1,9 @@
 import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core";
 import "./stylesheet.css";
+import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
+import "@patternfly/react-core/dist/styles/base.css";
+import "@patternfly/patternfly/patternfly.css";
 
 class Navigation extends React.Component {
   constructor(props) {
@@ -17,32 +20,18 @@ class Navigation extends React.Component {
 
   render() {
     const { activeItem } = this.state;
+
     return (
       <Nav onSelect={this.onSelect} aria-label="Nav">
         <NavList>
-          <NavItem
-            id="orders-link"
-            to="/orders"
-            itemId={0}
-            isActive={activeItem === 0}
-          >
-            Orders
+          <NavItem id="orders-link" itemId={0} isActive={activeItem === 0}>
+            <Link to="/orders">Orders</Link>
           </NavItem>
-          <NavItem
-            id="articles-link"
-            to="/articles"
-            itemId={1}
-            isActive={activeItem === 1}
-          >
-            Articles
+          <NavItem id="articles-link" itemId={1} isActive={activeItem === 1}>
+            <Link to="/articles">Articles</Link>
           </NavItem>
-          <NavItem
-            id="customers-link"
-            to="customers"
-            itemId={2}
-            isActive={activeItem === 2}
-          >
-            Customers
+          <NavItem id="customers-link" itemId={2} isActive={activeItem === 2}>
+            <Link to="/customers">Customers</Link>
           </NavItem>
         </NavList>
       </Nav>

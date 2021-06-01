@@ -2,7 +2,8 @@ import React from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import "@patternfly/patternfly/patternfly.css";
 import Navigation from "./Navigation";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
+
 import Home from "./Home";
 import Articles from "./Articles";
 import Customers from "./Customers";
@@ -23,7 +24,7 @@ class PageComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNavOpen: true,
+      isNavOpen: false,
     };
     this.onNavToggle = () => {
       this.setState({
@@ -52,16 +53,16 @@ class PageComponent extends React.Component {
     const Sidebar = <PageSidebar nav={<Navigation />} isNavOpen={isNavOpen} />;
 
     return (
-      <Page header={Header} sidebar={Sidebar} id="page">
-        <Router>
+      <Router>
+        <Page header={Header} sidebar={Sidebar} id="page">
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/customers" component={Customers} />
             <Route path="/orders" component={Orders} />
             <Route path="/articles" component={Articles} />
           </Switch>
-        </Router>
-      </Page>
+        </Page>
+      </Router>
     );
   }
 }
