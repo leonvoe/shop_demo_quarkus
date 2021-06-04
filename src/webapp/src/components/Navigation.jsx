@@ -9,7 +9,7 @@ class Navigation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeItem: 0,
+      activeItem: 3,
     };
     this.onSelect = (result) => {
       this.setState({
