@@ -30,7 +30,9 @@ import {
 
 import axios from "axios";
 
-const api = axios.create({ baseURL: "http://localhost:8080/customer" });
+const api = axios.create({
+  baseURL: "http://localhost:8080/customer",
+});
 
 class Customers extends Component {
   constructor(props) {

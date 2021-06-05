@@ -31,11 +31,14 @@ import {
 
 import axios from "axios";
 
-const api = axios.create({ baseURL: "http://localhost:8080/article" });
+const api = axios.create({
+  baseURL: "http://localhost:8080/article",
+});
 
 class Articles extends Component {
   constructor(props) {
     super(props);
+    this.getLength();
 
     this.state = {
       articles: [],
@@ -45,26 +48,46 @@ class Articles extends Component {
         { title: "Category", transforms: [sortable] },
       ],
       sortBy: {},
-      page: 1,
+      page: "0",
+      perPage: "10",
+      length: 0,
     };
     this.onSort = this.onSort.bind(this);
 
-    this.onSetPage = (_event, pageNumber) => {
+    this.onSetPage = (_event, value) => {
       this.setState({
-        page: pageNumber,
+        page: value,
       });
+      this.fetch(value, this.state.perPage);
     };
-    this.onPerPageSelect = (_event, perPage) => {
+    this.onPerPageSelect = (_event, value) => {
       this.setState({
-        perPage,
+        perPage: value,
       });
+      this.fetch(0, value);
     };
   }
 
-  componentDidMount() {
-    api.get("/").then((res) => {
+  getLength = () => {
+    api.get("/length").then((res) => {
+      this.setState({ length: res.data });
+    });
+  };
+
+  fetch = (pageParameter, perPageParameter) => {
+    const params = {
+      page: pageParameter,
+      size: perPageParameter,
+    };
+
+    api.get("/paginated", { params }).then((res) => {
       this.setState({ articles: res.data });
     });
+  };
+
+  componentDidMount() {
+    this.fetch("0", "10");
+    console.log(this.state.length);
   }
 
   onSort(_event, index, direction) {
@@ -107,7 +130,7 @@ class Articles extends Component {
         <ToolbarItem>
           <Pagination
             id={"pagination"}
-            itemCount={5}
+            itemCount={this.state.length}
             widgetId="pagination-options-menu-top"
             perPage={this.state.perPage}
             page={this.state.page}

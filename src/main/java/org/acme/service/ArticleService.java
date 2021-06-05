@@ -1,6 +1,8 @@
 package org.acme.service;
 
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 import org.acme.dto.ArticleDTO;
 import org.acme.dto.ArticleDTOMapper;
 import org.acme.dto.ArticleEntityMapper;
@@ -32,6 +34,21 @@ public class ArticleService {
         for(int i = 0; i < Article.count(); i++) {
             articleDTOList.add(articleDTOMapper.toResource(articlesList.get(i)));
         }
+
+        return articleDTOList;
+
+    }
+
+
+    public List<ArticleDTO> getAllArticlesPagination(int size, int page) {
+        PanacheQuery<Article> articlesList = Article.findAll();
+
+        List<Article> articlesListPaged = new ArrayList<>();
+        articlesListPaged = articlesList.page(Page.of(page, size)).list();
+
+        List<ArticleDTO> articleDTOList = new ArrayList<>();
+
+        articlesListPaged.stream().forEach(a -> articleDTOList.add(articleDTOMapper.toResource(a)));
 
         return articleDTOList;
 
