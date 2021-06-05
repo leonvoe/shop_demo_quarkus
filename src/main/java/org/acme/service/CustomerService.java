@@ -1,5 +1,8 @@
 package org.acme.service;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+import org.acme.dto.ArticleDTO;
 import org.acme.dto.CustomerDTO;
 import org.acme.dto.CustomerDTOMapper;
 import org.acme.dto.CustomerEntityMapper;
@@ -33,6 +36,21 @@ public class CustomerService {
         }
 
         return customerDTOList;
+    }
+
+
+    public List<CustomerDTO> getAllCustomersPagination(int size, int page) {
+        PanacheQuery<Customer> customersList = Customer.findAll();
+
+        List<Customer> customersListPaged = new ArrayList<>();
+        customersListPaged = customersList.page(Page.of(page, size)).list();
+
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+
+        customersListPaged.stream().forEach(a -> customerDTOList.add(customerDTOMapper.toResource(a)));
+
+        return customerDTOList;
+
     }
 
     public void insertCustomer(CustomerDTO customerDTO) {

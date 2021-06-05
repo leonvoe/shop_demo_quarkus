@@ -39,7 +39,6 @@ public class ArticleResource {
     @Produces("application/json")
     public List<ArticleDTO> findAllPaginated(@DefaultValue("0") @QueryParam("page") String page, @DefaultValue("5") @QueryParam("size") String size) {
         return articleService.getAllArticlesPagination(Integer.parseInt(size), Integer.parseInt(page));
-
     }
 
     @GET
