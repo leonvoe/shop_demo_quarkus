@@ -55,10 +55,10 @@ class Articles extends Component {
     this.onSort = this.onSort.bind(this);
 
     this.onSetPage = (_event, value) => {
+      this.fetch(value - 1, this.state.perPage);
       this.setState({
         page: value,
       });
-      this.fetch(value, this.state.perPage);
     };
     this.onPerPageSelect = (_event, value) => {
       this.setState({
@@ -82,6 +82,7 @@ class Articles extends Component {
 
     api.get("/paginated", { params }).then((res) => {
       this.setState({ articles: res.data });
+      console.log(this.state.articles);
     });
   };
 
