@@ -19,6 +19,21 @@ import {
   TextInput,
   Pagination,
   PaginationVariant,
+  Drawer,
+  DrawerPanelContent,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelBody,
+  DrawerHead,
+  DrawerActions,
+  DrawerCloseButton,
+  Form,
+  FormGroup,
+  TextArea,
+  FormSelect,
+  FormSelectOption,
+  Checkbox,
+  ActionGroup,
 } from "@patternfly/react-core";
 
 import {
@@ -51,8 +66,34 @@ class Articles extends Component {
       page: "0",
       perPage: "10",
       length: 0,
+      isExpanded: false,
+
+      articleCategoryValue: undefined,
+      articleNameValue: "",
+      articleDescriptionValue: "",
     };
+    this.drawerRef = React.createRef();
     this.onSort = this.onSort.bind(this);
+
+    this.handleArticleCategoryChange = (articleCategoryValue) => {
+      this.setState({ articleCategoryValue });
+    };
+    this.handleArticleNameChange = (articleNameValue) => {
+      this.setState({ articleNameValue });
+    };
+    this.handleArticleDescriptionChange = (articleDescriptionValue) => {
+      this.setState({ articleDescriptionValue });
+    };
+
+    this.options = [
+      { value: undefined, label: "Please Choose", disabled: false },
+      { value: 0, label: "Toys", disabled: false },
+      { value: 1, label: "Fashion", disabled: false },
+      { value: 2, label: "Books", disabled: false },
+      { value: 3, label: "Movies", disabled: false },
+      { value: 4, label: "Games", disabled: false },
+      { value: 5, label: "Music", disabled: false },
+    ];
 
     this.onSetPage = (_event, value) => {
       this.fetch(value - 1, this.state.perPage);
@@ -65,6 +106,23 @@ class Articles extends Component {
         perPage: value,
       });
       this.fetch(0, value);
+    };
+
+    this.onExpand = () => {
+      this.drawerRef.current && this.drawerRef.current.focus();
+    };
+
+    this.onClickAddArticle = () => {
+      const isExpanded = !this.state.isExpanded;
+      this.setState({
+        isExpanded,
+      });
+    };
+
+    this.onCloseClick = () => {
+      this.setState({
+        isExpanded: false,
+      });
     };
   }
 
@@ -82,13 +140,25 @@ class Articles extends Component {
 
     api.get("/paginated", { params }).then((res) => {
       this.setState({ articles: res.data });
-      console.log(this.state.articles);
+    });
+  };
+
+  post = () => {
+    api.post("/", {
+      name: this.state.articleNameValue,
+      description: this.state.articleDescriptionValue,
+      category: this.state.articleCategoryValue,
+    });
+    this.setState({
+      isExpanded: false,
+      articleNameValue: "",
+      articleDescriptionValue: "",
+      articleCategoryValue: undefined,
     });
   };
 
   componentDidMount() {
     this.fetch("0", "10");
-    console.log(this.state.length);
   }
 
   onSort(_event, index, direction) {
@@ -106,15 +176,25 @@ class Articles extends Component {
   }
 
   render() {
+    const {
+      columns,
+      articles,
+      sortBy,
+      isExpanded,
+      articleNameValue,
+      articleDescriptionValue,
+      articleCategoryValue,
+    } = this.state;
+
     const toolbarItems = (
       <React.Fragment>
         <ToolbarItem>
           <InputGroup>
             <TextInput
-              name="textInput1"
-              id="textInput1"
+              name="searchInput"
+              id="searchInput"
               type="search"
-              aria-label="search input example"
+              aria-label="search input"
             />
             <Button
               variant={ButtonVariant.control}
@@ -126,7 +206,13 @@ class Articles extends Component {
         </ToolbarItem>
         <ToolbarItem variant="separator" />
         <ToolbarItem>
-          <Button variant="primary">Add Article</Button>
+          <Button
+            variant="primary"
+            aria-expanded={isExpanded}
+            onClick={this.onClickAddArticle}
+          >
+            Add Article
+          </Button>
         </ToolbarItem>
         <ToolbarItem>
           <Pagination
@@ -144,7 +230,83 @@ class Articles extends Component {
       </React.Fragment>
     );
 
-    const { columns, articles, sortBy } = this.state;
+    const formContent = (
+      <Form isHorizontal>
+        <FormGroup label="Name" isRequired fieldId="horizontal-form-name">
+          <TextInput
+            value={articleNameValue}
+            isRequired
+            type="text"
+            id="horizontal-form-name"
+            aria-describedby="horizontal-form-name-helper"
+            name="horizontal-form-name"
+            onChange={this.handleArticleNameChange}
+          />
+        </FormGroup>
+        <FormGroup label="Article Description" fieldId="horizontal-form-desc">
+          <TextArea
+            value={articleDescriptionValue}
+            onChange={this.handleArticleDescriptionChange}
+            name="horizontal-form-desc"
+            id="horizontal-form-desc"
+          />
+        </FormGroup>
+        <FormGroup label="Category" fieldId="horizontal-form-category">
+          <FormSelect
+            value={articleCategoryValue}
+            isRequired
+            onChange={this.handleArticleCategoryChange}
+            id="horzontal-form-category"
+            name="horizontal-form-category"
+          >
+            {this.options.map((option, index) => (
+              <FormSelectOption
+                isDisabled={option.disabled}
+                key={index}
+                value={option.value}
+                label={option.label}
+              />
+            ))}
+          </FormSelect>
+        </FormGroup>
+
+        <ActionGroup>
+          <Button variant="primary" onClick={this.post}>
+            Submit form
+          </Button>
+        </ActionGroup>
+      </Form>
+    );
+
+    const panelContent = (
+      <DrawerPanelContent>
+        <DrawerHead>
+          <span tabIndex={isExpanded ? 0 : -1} ref={this.drawerRef}>
+            {formContent}
+          </span>
+          <DrawerActions>
+            <DrawerCloseButton onClick={this.onCloseClick} />
+          </DrawerActions>
+        </DrawerHead>
+      </DrawerPanelContent>
+    );
+
+    const drawerContent = (
+      <Table
+        aria-label="Sortable Table"
+        sortBy={sortBy}
+        onSort={this.onSort}
+        cells={columns}
+        rows={articles.map((article, index) => [
+          article.name,
+          article.description,
+          article.category,
+        ])}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
+    );
 
     return (
       <div>
@@ -158,20 +320,11 @@ class Articles extends Component {
           </Toolbar>
         </PageSection>
         <PageSection>
-          <Table
-            aria-label="Sortable Table"
-            sortBy={sortBy}
-            onSort={this.onSort}
-            cells={columns}
-            rows={articles.map((article, index) => [
-              article.name,
-              article.description,
-              article.category,
-            ])}
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
+          <Drawer isExpanded={isExpanded} isInline onExpand={this.onExpand}>
+            <DrawerContent panelContent={panelContent}>
+              <DrawerContentBody>{drawerContent}</DrawerContentBody>
+            </DrawerContent>
+          </Drawer>
         </PageSection>
       </div>
     );

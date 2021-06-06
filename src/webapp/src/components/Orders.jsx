@@ -86,7 +86,6 @@ class Orders extends Component {
 
   componentDidMount() {
     this.fetch("0", "10");
-    console.log(this.state.length);
   }
 
   onSort(_event, index, direction) {

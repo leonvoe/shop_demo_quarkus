@@ -83,13 +83,11 @@ class Customers extends Component {
 
     api.get("/paginated", { params }).then((res) => {
       this.setState({ customers: res.data });
-      console.log(this.state.customers);
     });
   };
 
   componentDidMount() {
     this.fetch("0", "10");
-    console.log(this.state.length);
   }
 
   onSort(_event, index, direction) {
