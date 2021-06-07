@@ -185,6 +185,20 @@ class Articles extends Component {
     });
   };
 
+  delete = () => {
+    api.delete("/" + this.state.articleIdValue);
+
+    this.setState({
+      isExpanded: false,
+      articleNameValue: "",
+      articleDescriptionValue: "",
+      page: "0",
+      perPage: "10",
+      articleCategoryValue: undefined,
+      articleIdValue: undefined,
+    });
+  };
+
   componentDidMount() {
     this._isMounted = true;
     this.fetch("0", "10");
@@ -266,9 +280,14 @@ class Articles extends Component {
       );
     } else {
       button = (
-        <Button variant="primary" onClick={this.update}>
-          Edit article
-        </Button>
+        <span>
+          <Button variant="primary" onClick={this.update}>
+            Edit article
+          </Button>
+          <Button variant="warning" onClick={this.delete}>
+            Delete article
+          </Button>
+        </span>
       );
     }
 
