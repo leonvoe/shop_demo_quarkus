@@ -51,6 +51,8 @@ const api = axios.create({
 });
 
 class Articles extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.getLength();
@@ -67,13 +69,16 @@ class Articles extends Component {
       perPage: "10",
       length: 0,
       isExpanded: false,
+      drawerEdit: false,
 
+      articleIdValue: undefined,
       articleCategoryValue: undefined,
       articleNameValue: "",
       articleDescriptionValue: "",
     };
     this.drawerRef = React.createRef();
     this.onSort = this.onSort.bind(this);
+    this.onRowClick = this.onRowClick.bind(this);
 
     this.handleArticleCategoryChange = (articleCategoryValue) => {
       this.setState({ articleCategoryValue });
@@ -115,6 +120,7 @@ class Articles extends Component {
     this.onClickAddArticle = () => {
       const isExpanded = !this.state.isExpanded;
       this.setState({
+        drawerEdit: false,
         isExpanded,
       });
     };
@@ -149,16 +155,43 @@ class Articles extends Component {
       description: this.state.articleDescriptionValue,
       category: this.state.articleCategoryValue,
     });
+
     this.setState({
       isExpanded: false,
       articleNameValue: "",
       articleDescriptionValue: "",
+      page: "0",
+      perPage: "10",
       articleCategoryValue: undefined,
+      articleIdValue: undefined,
+    });
+  };
+
+  update = () => {
+    api.put("/" + this.state.articleIdValue, {
+      name: this.state.articleNameValue,
+      description: this.state.articleDescriptionValue,
+      category: this.state.articleCategoryValue,
+    });
+
+    this.setState({
+      isExpanded: false,
+      articleNameValue: "",
+      articleDescriptionValue: "",
+      page: "0",
+      perPage: "10",
+      articleCategoryValue: undefined,
+      articleIdValue: undefined,
     });
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.fetch("0", "10");
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onSort(_event, index, direction) {
@@ -175,6 +208,42 @@ class Articles extends Component {
     });
   }
 
+  onRowClick(_event, row) {
+    const article = this.state.articles[row.secretTableRowKeyId];
+
+    switch (article.category) {
+      case "TOYS":
+        this.setState({ articleCategoryValue: 0 });
+        break;
+      case "FASHION":
+        this.setState({ articleCategoryValue: 1 });
+        break;
+      case "BOOKS":
+        this.setState({ articleCategoryValue: 2 });
+        break;
+      case "MOVIES":
+        this.setState({ articleCategoryValue: 3 });
+        break;
+      case "GAMES":
+        this.setState({ articleCategoryValue: 4 });
+        break;
+      case "MUSIC":
+        this.setState({ articleCategoryValue: 5 });
+        break;
+
+      default:
+        this.setState({ articleCategoryValue: undefined });
+        break;
+    }
+    this.setState({
+      drawerEdit: true,
+      isExpanded: true,
+      articleNameValue: article.name,
+      articleDescriptionValue: article.description,
+      articleIdValue: article.id,
+    });
+  }
+
   render() {
     const {
       columns,
@@ -184,7 +253,24 @@ class Articles extends Component {
       articleNameValue,
       articleDescriptionValue,
       articleCategoryValue,
+      drawerEdit,
     } = this.state;
+
+    let button;
+
+    if (!drawerEdit) {
+      button = (
+        <Button variant="primary" onClick={this.post}>
+          Add article
+        </Button>
+      );
+    } else {
+      button = (
+        <Button variant="primary" onClick={this.update}>
+          Edit article
+        </Button>
+      );
+    }
 
     const toolbarItems = (
       <React.Fragment>
@@ -270,11 +356,7 @@ class Articles extends Component {
           </FormSelect>
         </FormGroup>
 
-        <ActionGroup>
-          <Button variant="primary" onClick={this.post}>
-            Submit form
-          </Button>
-        </ActionGroup>
+        <ActionGroup>{button}</ActionGroup>
       </Form>
     );
 
@@ -304,7 +386,7 @@ class Articles extends Component {
         ])}
       >
         <TableHeader />
-        <TableBody />
+        <TableBody onRowClick={this.onRowClick} />
       </Table>
     );
 

@@ -7,6 +7,7 @@ import org.acme.dto.ArticleDTO;
 import org.acme.dto.ArticleDTOMapper;
 import org.acme.dto.ArticleEntityMapper;
 import org.acme.model.Article;
+import org.acme.model.Category;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -63,6 +64,35 @@ public class ArticleService {
     }
 
     public void updateArticle(Long id, ArticleDTO newArticleDTO) {
-        //
+        int category = 0;
+
+        switch(newArticleDTO.getCategory()) {
+            case TOYS:
+                category=0;
+                break;
+            case FASHION:
+                category=1;
+                break;
+            case BOOKS:
+                category=2;
+
+                break;
+            case MOVIES:
+                category=3;
+
+                break;
+            case GAMES:
+                category=4;
+
+                break;
+            case MUSIC:
+                category=5;
+
+                break;
+            default:
+                break;
+
+        }
+        Article.update("name = '" + newArticleDTO.getName() + "', description ='" + newArticleDTO.getDescription() + "', category = '" + category + "' where id = ?1", id);
     }
 }
