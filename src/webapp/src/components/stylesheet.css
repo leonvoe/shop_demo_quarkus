@@ -1,6 +1,6 @@
-/* .pf-c-page__sidebar-body {
+.pf-c-page__sidebar-body {
   margin-bottom: 154%;
-} */
+}
 
 #page {
   background-color: white;
@@ -19,4 +19,8 @@
 
 #pagination {
   display: flex;
+}
+
+#deleteButton {
+  margin-top: 0.5rem;
 }

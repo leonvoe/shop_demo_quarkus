@@ -4,6 +4,8 @@ import "@patternfly/patternfly/patternfly.css";
 import "./stylesheet.css";
 
 import SearchIcon from "@patternfly/react-icons/dist/js/icons/search-icon";
+import DeleteIcon from "@patternfly/react-icons/dist/js/icons/cross-icon";
+import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 
 import {
   PageSection,
@@ -70,6 +72,7 @@ class Articles extends Component {
       length: 0,
       isExpanded: false,
       drawerEdit: false,
+      searchValue: "",
 
       articleIdValue: undefined,
       articleCategoryValue: undefined,
@@ -129,6 +132,15 @@ class Articles extends Component {
       this.setState({
         isExpanded: false,
       });
+    };
+
+    this.onSearchValueChange = (inputValue) => {
+      this.setState({
+        searchValue: inputValue,
+      });
+      /* if (this.state.searchValue === "") {
+        fetch(this.state.page, this.state.perPage);
+      } */
     };
   }
 
@@ -197,6 +209,20 @@ class Articles extends Component {
       articleCategoryValue: undefined,
       articleIdValue: undefined,
     });
+  };
+
+  search = () => {
+    const params = {
+      search: this.state.searchValue,
+    };
+    api.get("/search", { params }).then((res) => {
+      this.setState({ articles: res.data });
+    });
+  };
+
+  deleteSearch = () => {
+    this.setState({ searchValue: "" });
+    this.fetch(this.state.page, this.state.perPage);
   };
 
   componentDidMount() {
@@ -280,14 +306,14 @@ class Articles extends Component {
       );
     } else {
       button = (
-        <span>
+        <div>
           <Button variant="primary" onClick={this.update}>
             Edit article
           </Button>
-          <Button variant="warning" onClick={this.delete}>
+          <Button variant="warning" onClick={this.delete} id="deleteButton">
             Delete article
           </Button>
-        </span>
+        </div>
       );
     }
 
@@ -298,14 +324,24 @@ class Articles extends Component {
             <TextInput
               name="searchInput"
               id="searchInput"
-              type="search"
+              type="text"
               aria-label="search input"
+              onChange={this.onSearchValueChange}
+              value={this.state.searchValue}
             />
             <Button
               variant={ButtonVariant.control}
               aria-label="search button for search input"
+              onClick={this.search}
             >
               <SearchIcon />
+            </Button>
+            <Button
+              variant={ButtonVariant.control}
+              aria-label="delete button for search input"
+              onClick={this.deleteSearch}
+            >
+              <TimesIcon />
             </Button>
           </InputGroup>
         </ToolbarItem>

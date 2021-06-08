@@ -1,6 +1,7 @@
 package org.acme.service;
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.acme.dto.ArticleDTO;
@@ -8,6 +9,7 @@ import org.acme.dto.ArticleDTOMapper;
 import org.acme.dto.ArticleEntityMapper;
 import org.acme.model.Article;
 import org.acme.model.Category;
+import org.jboss.logging.annotations.Param;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -44,7 +46,7 @@ public class ArticleService {
     public List<ArticleDTO> getAllArticlesPagination(int size, int page) {
         PanacheQuery<Article> articlesList = Article.findAll();
 
-        List<Article> articlesListPaged = new ArrayList<>();
+        List<Article> articlesListPaged;
         articlesListPaged = articlesList.page(Page.of(page, size)).list();
 
         List<ArticleDTO> articleDTOList = new ArrayList<>();
@@ -53,6 +55,16 @@ public class ArticleService {
 
         return articleDTOList;
 
+    }
+
+
+    public List<ArticleDTO> findAllByNameAndDescription(String searchVal) {
+        List<ArticleDTO> articleDTOList = new ArrayList<>();
+        List<Article> filteredArticles = Article.list("select a from Article a where lower(a.name) like lower(?1) or lower(a.description) like lower(?1)", searchVal);
+
+        filteredArticles.stream().forEach(a -> articleDTOList.add(articleDTOMapper.toResource(a)));
+
+        return articleDTOList;
     }
 
     public void insertArticle(ArticleDTO articleDTO) {
