@@ -4,7 +4,6 @@ import "@patternfly/patternfly/patternfly.css";
 import "./stylesheet.css";
 
 import SearchIcon from "@patternfly/react-icons/dist/js/icons/search-icon";
-import DeleteIcon from "@patternfly/react-icons/dist/js/icons/cross-icon";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 
 import {
@@ -25,7 +24,6 @@ import {
   DrawerPanelContent,
   DrawerContent,
   DrawerContentBody,
-  DrawerPanelBody,
   DrawerHead,
   DrawerActions,
   DrawerCloseButton,
@@ -34,7 +32,6 @@ import {
   TextArea,
   FormSelect,
   FormSelectOption,
-  Checkbox,
   ActionGroup,
   Select,
   SelectVariant,
@@ -146,6 +143,9 @@ class Articles extends Component {
     this.onCloseClick = () => {
       this.setState({
         isExpanded: false,
+        articleNameValue: "",
+        articleDescriptionValue: "",
+        articleCategoryDrawerValue: undefined,
       });
     };
 
