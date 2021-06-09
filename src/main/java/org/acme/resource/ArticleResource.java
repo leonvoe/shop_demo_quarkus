@@ -45,8 +45,8 @@ public class ArticleResource {
     @Path("search")
     @PermitAll
     @Produces("application/json")
-    public List<ArticleDTO> findAllByNameAndDescription(@DefaultValue("") @QueryParam("search") String searchValue) {
-        return articleService.findAllByNameAndDescription(searchValue);
+    public List<ArticleDTO> findAllByNameAndDescriptionAndCategory(@DefaultValue("") @QueryParam("search") String searchValue, @DefaultValue("") @QueryParam("filter") String filterValue) {
+        return articleService.findAllByNameAndDescription(searchValue, filterValue);
     }
 
 

@@ -58,10 +58,41 @@ public class ArticleService {
     }
 
 
-    public List<ArticleDTO> findAllByNameAndDescription(String searchVal) {
+    public List<ArticleDTO> findAllByNameAndDescription(String searchVal, String filterVal) {
+        Category filterValEnum = null;
         List<ArticleDTO> articleDTOList = new ArrayList<>();
-        List<Article> filteredArticles = Article.list("select a from Article a where lower(a.name) like lower(?1) or lower(a.description) like lower(?1)", searchVal);
+        List<Article> filteredArticles;
 
+        switch(filterVal) {
+            case "Toys":
+                filterValEnum = Category.TOYS;
+                break;
+            case "Fashion":
+                filterValEnum = Category.FASHION;
+                break;
+            case "Books":
+                filterValEnum = Category.BOOKS;
+                break;
+            case "Movies":
+                filterValEnum = Category.MOVIES;
+                break;
+            case "Games":
+                filterValEnum = Category.GAMES;
+                break;
+            case "Music":
+                filterValEnum = Category.MUSIC;
+                break;
+            default:
+                filterVal = "";
+                break;
+        }
+
+        if(filterVal.equals("")) {
+            filteredArticles = Article.list("name = ?1 or description = ?1", searchVal);
+        }
+        else {
+            filteredArticles = Article.list("select a from Article a where a.category = ?1", filterValEnum);
+        }
         filteredArticles.stream().forEach(a -> articleDTOList.add(articleDTOMapper.toResource(a)));
 
         return articleDTOList;

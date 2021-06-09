@@ -24,3 +24,8 @@
 #deleteButton {
   margin-top: 0.5rem;
 }
+
+.webshopLink {
+  text-decoration: none;
+  color: white;
+}

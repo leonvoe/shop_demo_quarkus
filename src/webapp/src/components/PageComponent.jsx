@@ -36,14 +36,13 @@ class PageComponent extends React.Component {
   render() {
     const { isNavOpen } = this.state;
 
-    const logoProps = {
-      href: "/",
-      onClick: () => console.log("clicked logo"),
-    };
     const Header = (
       <PageHeader
-        logo="Webshop"
-        logoProps={logoProps}
+        logo={
+          <Link to="/" className="webshopLink">
+            Webshop
+          </Link>
+        }
         headerTools={<PageHeaderTools>Sign-In</PageHeaderTools>}
         showNavToggle
         isNavOpen={isNavOpen}

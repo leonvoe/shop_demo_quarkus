@@ -36,6 +36,9 @@ import {
   FormSelectOption,
   Checkbox,
   ActionGroup,
+  Select,
+  SelectVariant,
+  SelectOption,
 } from "@patternfly/react-core";
 
 import {
@@ -73,9 +76,11 @@ class Articles extends Component {
       isExpanded: false,
       drawerEdit: false,
       searchValue: "",
+      categoryIsExpanded: false,
+      categorySelected: null,
 
       articleIdValue: undefined,
-      articleCategoryValue: undefined,
+      articleCategoryDrawerValue: undefined,
       articleNameValue: "",
       articleDescriptionValue: "",
     };
@@ -83,8 +88,8 @@ class Articles extends Component {
     this.onSort = this.onSort.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
 
-    this.handleArticleCategoryChange = (articleCategoryValue) => {
-      this.setState({ articleCategoryValue });
+    this.handleArticleCategoryChange = (articleCategoryDrawerValue) => {
+      this.setState({ articleCategoryDrawerValue });
     };
     this.handleArticleNameChange = (articleNameValue) => {
       this.setState({ articleNameValue });
@@ -93,7 +98,7 @@ class Articles extends Component {
       this.setState({ articleDescriptionValue });
     };
 
-    this.options = [
+    this.categoryDrawerOptions = [
       { value: undefined, label: "Please Choose", disabled: false },
       { value: 0, label: "Toys", disabled: false },
       { value: 1, label: "Fashion", disabled: false },
@@ -101,6 +106,16 @@ class Articles extends Component {
       { value: 3, label: "Movies", disabled: false },
       { value: 4, label: "Games", disabled: false },
       { value: 5, label: "Music", disabled: false },
+    ];
+
+    this.categorySelectOptions = [
+      { value: "Category", disabled: false, isPlaceholder: true },
+      { value: "Toys", disabled: false },
+      { value: "Fashion", disabled: false },
+      { value: "Books", disabled: false },
+      { value: "Movies", disabled: false },
+      { value: "Games", disabled: false },
+      { value: "Music", disabled: false },
     ];
 
     this.onSetPage = (_event, value) => {
@@ -138,9 +153,34 @@ class Articles extends Component {
       this.setState({
         searchValue: inputValue,
       });
-      /* if (this.state.searchValue === "") {
-        fetch(this.state.page, this.state.perPage);
-      } */
+    };
+
+    this.onCategoryToggle = (isExpanded) => {
+      this.setState({
+        categoryIsExpanded: isExpanded,
+      });
+    };
+
+    this.onCategorySelect = (event, selection, isPlaceholder) => {
+      console.log(selection);
+      if (isPlaceholder) this.clearCategorySelection();
+      this.setState(
+        {
+          categorySelected: selection,
+          categoryIsExpanded: false,
+        },
+        function () {
+          this.search();
+        }
+      );
+    };
+
+    this.clearCategorySelection = () => {
+      this.setState({
+        categorySelected: null,
+        categoryIsExpanded: false,
+      });
+      this.fetch(this.state.page, this.state.perPageParameter);
     };
   }
 
@@ -165,7 +205,7 @@ class Articles extends Component {
     api.post("/", {
       name: this.state.articleNameValue,
       description: this.state.articleDescriptionValue,
-      category: this.state.articleCategoryValue,
+      category: this.state.articleCategoryDrawerValue,
     });
 
     this.setState({
@@ -174,7 +214,7 @@ class Articles extends Component {
       articleDescriptionValue: "",
       page: "0",
       perPage: "10",
-      articleCategoryValue: undefined,
+      articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
   };
@@ -183,7 +223,7 @@ class Articles extends Component {
     api.put("/" + this.state.articleIdValue, {
       name: this.state.articleNameValue,
       description: this.state.articleDescriptionValue,
-      category: this.state.articleCategoryValue,
+      category: this.state.articleCategoryDrawerValue,
     });
 
     this.setState({
@@ -192,7 +232,7 @@ class Articles extends Component {
       articleDescriptionValue: "",
       page: "0",
       perPage: "10",
-      articleCategoryValue: undefined,
+      articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
   };
@@ -206,7 +246,7 @@ class Articles extends Component {
       articleDescriptionValue: "",
       page: "0",
       perPage: "10",
-      articleCategoryValue: undefined,
+      articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
   };
@@ -214,6 +254,7 @@ class Articles extends Component {
   search = () => {
     const params = {
       search: this.state.searchValue,
+      filter: this.state.categorySelected,
     };
     api.get("/search", { params }).then((res) => {
       this.setState({ articles: res.data });
@@ -253,26 +294,26 @@ class Articles extends Component {
 
     switch (article.category) {
       case "TOYS":
-        this.setState({ articleCategoryValue: 0 });
+        this.setState({ articleCategoryDrawerValue: 0 });
         break;
       case "FASHION":
-        this.setState({ articleCategoryValue: 1 });
+        this.setState({ articleCategoryDrawerValue: 1 });
         break;
       case "BOOKS":
-        this.setState({ articleCategoryValue: 2 });
+        this.setState({ articleCategoryDrawerValue: 2 });
         break;
       case "MOVIES":
-        this.setState({ articleCategoryValue: 3 });
+        this.setState({ articleCategoryDrawerValue: 3 });
         break;
       case "GAMES":
-        this.setState({ articleCategoryValue: 4 });
+        this.setState({ articleCategoryDrawerValue: 4 });
         break;
       case "MUSIC":
-        this.setState({ articleCategoryValue: 5 });
+        this.setState({ articleCategoryDrawerValue: 5 });
         break;
 
       default:
-        this.setState({ articleCategoryValue: undefined });
+        this.setState({ articleCategoryDrawerValue: undefined });
         break;
     }
     this.setState({
@@ -292,8 +333,10 @@ class Articles extends Component {
       isExpanded,
       articleNameValue,
       articleDescriptionValue,
-      articleCategoryValue,
+      articleCategoryDrawerValue,
       drawerEdit,
+      categoryIsExpanded,
+      categorySelected,
     } = this.state;
 
     let button;
@@ -310,7 +353,7 @@ class Articles extends Component {
           <Button variant="primary" onClick={this.update}>
             Edit article
           </Button>
-          <Button variant="warning" onClick={this.delete} id="deleteButton">
+          <Button variant="danger" onClick={this.delete} id="deleteButton">
             Delete article
           </Button>
         </div>
@@ -345,6 +388,25 @@ class Articles extends Component {
             </Button>
           </InputGroup>
         </ToolbarItem>
+        <ToolbarItem>
+          <Select
+            variant={SelectVariant.single}
+            aria-label="Select Input"
+            onToggle={this.onCategoryToggle}
+            onSelect={this.onCategorySelect}
+            selections={categorySelected}
+            isOpen={categoryIsExpanded}
+          >
+            {this.categorySelectOptions.map((category, index) => (
+              <SelectOption
+                isDisabled={category.disabled}
+                isPlaceholder={category.isPlaceholder}
+                key={index}
+                value={category.value}
+              />
+            ))}
+          </Select>
+        </ToolbarItem>
         <ToolbarItem variant="separator" />
         <ToolbarItem>
           <Button
@@ -355,6 +417,8 @@ class Articles extends Component {
             Add Article
           </Button>
         </ToolbarItem>
+        <ToolbarItem variant="separator" />
+
         <ToolbarItem>
           <Pagination
             id={"pagination"}
@@ -394,13 +458,13 @@ class Articles extends Component {
         </FormGroup>
         <FormGroup label="Category" fieldId="horizontal-form-category">
           <FormSelect
-            value={articleCategoryValue}
+            value={articleCategoryDrawerValue}
             isRequired
             onChange={this.handleArticleCategoryChange}
             id="horzontal-form-category"
             name="horizontal-form-category"
           >
-            {this.options.map((option, index) => (
+            {this.categoryDrawerOptions.map((option, index) => (
               <FormSelectOption
                 isDisabled={option.disabled}
                 key={index}
