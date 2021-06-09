@@ -81,6 +81,7 @@ class Customers extends Component {
       customerLastNameValue: "",
       customerUsernameValue: "",
       customerPasswordValue: "",
+      customerDobValue: undefined,
       customerGenderDrawerValue: undefined,
     };
     this.drawerRef = React.createRef();
@@ -99,7 +100,11 @@ class Customers extends Component {
     this.handleCustomerPasswordChange = (customerPasswordValue) => {
       this.setState({ customerPasswordValue });
     };
-    this.handleCustomerGenderDrawerChange = (customerGenderDrawerValue) => {
+    this.handleCustomerDobChange = (customerDobValue) => {
+      console.log(customerDobValue);
+      this.setState({ customerDobValue });
+    };
+    this.handleCustomerGenderChange = (customerGenderDrawerValue) => {
       this.setState({ customerGenderDrawerValue });
     };
 
@@ -210,6 +215,7 @@ class Customers extends Component {
       last_name: this.state.customerLastNameValue,
       username: this.state.customerUsernameValue,
       password: this.state.customerPasswordValue,
+      dob: this.state.customerDobValue,
       gender: this.state.customerGenderDrawerValue,
     });
 
@@ -223,6 +229,7 @@ class Customers extends Component {
       perPage: "10",
       customerGenderDrawerValue: undefined,
       customerIdValue: undefined,
+      customerDobValue: undefined,
     });
   };
 
@@ -245,6 +252,7 @@ class Customers extends Component {
       perPage: "10",
       customerGenderDrawerValue: undefined,
       customerIdValue: undefined,
+      customerDobValue: undefined,
     });
   };
 
@@ -261,6 +269,7 @@ class Customers extends Component {
       perPage: "10",
       customerGenderDrawerValue: undefined,
       customerIdValue: undefined,
+      customerDobValue: undefined,
     });
   };
 
@@ -322,6 +331,8 @@ class Customers extends Component {
       customerLastNameValue: customer.last_name,
       customerUsernameValue: customer.username,
       customerPasswordValue: customer.password,
+      customerDobValue: customer.dob,
+      customerIdValue: customer.id,
     });
   }
 
@@ -335,6 +346,7 @@ class Customers extends Component {
       customerLastNameValue,
       customerUsernameValue,
       customerPasswordValue,
+      customerDobValue,
       customerGenderDrawerValue,
       drawerEdit,
       genderIsExpanded,
@@ -480,7 +492,8 @@ class Customers extends Component {
         </FormGroup>
         <FormGroup label="Date of birth">
           <DatePicker
-            onChange={(str, date) => console.log("onChange", str, date)}
+            value={customerDobValue}
+            onChange={this.handleCustomerDobChange}
           />
         </FormGroup>
         <FormGroup label="Gender" fieldId="horizontal-form-category">
