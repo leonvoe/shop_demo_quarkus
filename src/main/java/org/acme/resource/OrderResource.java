@@ -52,7 +52,7 @@ public class OrderResource {
     }
 
     @POST
-    @RolesAllowed("user")
+    @PermitAll
     @Transactional
     @Consumes("application/json")
     public void insertOrder(OrderDTO orderDTO) {
