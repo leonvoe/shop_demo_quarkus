@@ -44,6 +44,14 @@ public class OrderResource {
     }
 
     @GET
+    @Path("search")
+    @PermitAll
+    @Produces("application/json")
+    public List<OrderDTO> findAllByNotesAndShippingAndStatus(@DefaultValue("") @QueryParam("search") String searchValue, @DefaultValue("") @QueryParam("statusFilter") String filterValueStatus, @DefaultValue("") @QueryParam("shippingFilter") String filterValueShipping) {
+        return orderService.findAllByNotesAndShippingAndStatus(searchValue, filterValueStatus, filterValueShipping);
+    }
+
+    @GET
     @Path("length")
     @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
@@ -69,7 +77,7 @@ public class OrderResource {
     }
 
     @PUT
-    @RolesAllowed("user")
+    @PermitAll
     @Transactional
     @Path("{id}")
     @Consumes("application/json")

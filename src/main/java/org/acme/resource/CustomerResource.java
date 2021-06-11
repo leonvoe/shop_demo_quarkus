@@ -44,6 +44,14 @@ public class CustomerResource {
     }
 
     @GET
+    @Path("search")
+    @PermitAll
+    @Produces("application/json")
+    public List<CustomerDTO> findAllByNameAndDescription(@DefaultValue("") @QueryParam("search") String searchValue, @DefaultValue("") @QueryParam("filter") String filterValue) {
+        return customerService.findAllByNameAndDescription(searchValue, filterValue);
+    }
+
+    @GET
     @Path("length")
     @PermitAll
     @Produces(MediaType.TEXT_PLAIN)

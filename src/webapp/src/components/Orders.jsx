@@ -48,17 +48,29 @@ import {
 
 import axios from "axios";
 
-const api = axios.create({
+const orderApi = axios.create({
   baseURL: "http://localhost:8080/order",
+});
+
+const articleApi = axios.create({
+  baseURL: "http://localhost:8080/article",
+});
+
+const customerApi = axios.create({
+  baseURL: "http://localhost:8080/customer",
 });
 
 class Orders extends Component {
   constructor(props) {
     super(props);
     this.getLength();
+    this.getCustomers();
+    this.getArticles();
 
     this.state = {
       orders: [],
+      articles: [],
+      customers: [],
       columns: [
         { title: "Shipping", transforms: [sortable] },
         { title: "Notes", transforms: [sortable] },
@@ -80,10 +92,10 @@ class Orders extends Component {
 
       orderIdValue: undefined,
       orderNotesValue: "",
-      orderCustomerValue: "",
-      orderArticleValue: "",
       orderShippingDrawerValue: undefined,
       orderStatusDrawerValue: undefined,
+      orderCustomerValue: undefined,
+      orderArticleValue: undefined,
     };
     this.drawerRef = React.createRef();
     this.onSort = this.onSort.bind(this);
@@ -102,7 +114,6 @@ class Orders extends Component {
       this.setState({ orderCustomerValue });
     };
     this.handleOrderArticleChange = (orderArticleValue) => {
-      console.log(orderArticleValue);
       this.setState({ orderArticleValue });
     };
 
@@ -163,8 +174,8 @@ class Orders extends Component {
       this.setState({
         isExpanded: false,
         orderNotesValue: "",
-        orderArticleValue: "",
-        orderCustomerValue: "",
+        orderArticleValue: undefined,
+        orderCustomerValue: undefined,
         orderShippingDrawerValue: undefined,
         orderStatusDrawerValue: undefined,
       });
@@ -183,7 +194,7 @@ class Orders extends Component {
     };
 
     this.onShippingSelect = (event, selection, isPlaceholder) => {
-      if (isPlaceholder) this.clearGenderSelection();
+      if (isPlaceholder) this.clearShippingSelection();
       this.setState(
         {
           shippingSelected: selection,
@@ -210,7 +221,7 @@ class Orders extends Component {
     };
 
     this.onStatusSelect = (event, selection, isPlaceholder) => {
-      if (isPlaceholder) this.clearGenderSelection();
+      if (isPlaceholder) this.clearStatusSelection();
       this.setState(
         {
           statusSelected: selection,
@@ -232,8 +243,20 @@ class Orders extends Component {
   }
 
   getLength = () => {
-    api.get("/length").then((res) => {
+    orderApi.get("/length").then((res) => {
       this.setState({ length: res.data });
+    });
+  };
+
+  getCustomers = () => {
+    customerApi.get("/").then((res) => {
+      this.setState({ customers: res.data });
+    });
+  };
+
+  getArticles = () => {
+    articleApi.get("/").then((res) => {
+      this.setState({ articles: res.data });
     });
   };
 
@@ -243,25 +266,26 @@ class Orders extends Component {
       size: perPageParameter,
     };
 
-    api.get("/paginated", { params }).then((res) => {
+    orderApi.get("/paginated", { params }).then((res) => {
       this.setState({ orders: res.data });
     });
   };
 
   post = () => {
-    api.post("/", {
+    console.log(this.state.orderArticleValue, this.state.orderCustomerValue);
+    orderApi.post("/", {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
-      customer: this.state.orderCustomerValue,
-      articles: this.state.orderArticleValue,
+      customer: { id: this.state.orderCustomerValue },
+      articles: [{ id: this.state.orderArticleValue }],
     });
 
     this.setState({
       isExpanded: false,
       orderNotesValue: "",
-      orderCustomerValue: "",
-      orderArticleValue: "",
+      orderCustomerValue: undefined,
+      orderArticleValue: undefined,
       page: "0",
       perPage: "10",
       orderShippingDrawerValue: undefined,
@@ -271,12 +295,19 @@ class Orders extends Component {
   };
 
   update = () => {
-    api.put("/" + this.state.orderIdValue, {
+    console.log(
+      this.state.orderShippingDrawerValue,
+      this.state.orderNotesValue,
+      this.state.orderStatusDrawerValue,
+      this.state.orderCustomerValue,
+      this.state.orderArticleValue
+    );
+    orderApi.put("/" + this.state.orderIdValue, {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
-      customer: this.state.orderCustomerValue,
-      articles: this.state.orderArticleValue,
+      customer: { id: this.state.orderCustomerValue },
+      articles: [{ id: this.state.orderArticleValue }],
     });
 
     this.setState({
@@ -293,7 +324,7 @@ class Orders extends Component {
   };
 
   delete = () => {
-    api.delete("/" + this.state.orderIdValue);
+    orderApi.delete("/" + this.state.orderIdValue);
 
     this.setState({
       isExpanded: false,
@@ -314,7 +345,7 @@ class Orders extends Component {
       statusFilter: this.state.statusSelected,
       shippingFilter: this.state.shippingSelected,
     };
-    api.get("/search", { params }).then((res) => {
+    orderApi.get("/search", { params }).then((res) => {
       this.setState({ orders: res.data });
     });
   };
@@ -379,10 +410,11 @@ class Orders extends Component {
       drawerEdit: true,
       isExpanded: true,
       orderNotesValue: order.notes,
-      orderCustomerValue: order.customer,
+      orderCustomerValue: order.customer.id,
       orderArticleValue: order.article,
       orderIdValue: order.id,
     });
+    console.log(order.id);
   }
 
   render() {
@@ -397,8 +429,8 @@ class Orders extends Component {
       orderCustomerValue,
       orderArticleValue,
       drawerEdit,
-      genderIsExpanded,
-      genderSelected,
+      shippingIsExpanded,
+      shippingSelected,
       statusIsExpanded,
       statusSelected,
     } = this.state;
@@ -423,6 +455,24 @@ class Orders extends Component {
         </div>
       );
     }
+
+    let customerDrawerOptions = this.state.customers.map((customer) => {
+      const container = {};
+
+      container.value = customer.id;
+      container.label = customer.first_name.concat(" ", customer.last_name);
+
+      return container;
+    });
+
+    let articleDrawerOptions = this.state.articles.map((article) => {
+      const container = {};
+
+      container.value = article.id;
+      container.label = article.name;
+
+      return container;
+    });
 
     const toolbarItems = (
       <React.Fragment>
@@ -477,8 +527,8 @@ class Orders extends Component {
             aria-label="Select Input"
             onToggle={this.onShippingToggle}
             onSelect={this.onShippingSelect}
-            selections={genderSelected}
-            isOpen={genderIsExpanded}
+            selections={shippingSelected}
+            isOpen={shippingIsExpanded}
           >
             {this.shippingSelectOptions.map((shipping, index) => (
               <SelectOption
@@ -565,6 +615,44 @@ class Orders extends Component {
           </FormSelect>
         </FormGroup>
 
+        <FormGroup label="Customer" fieldId="horizontal-form-customer">
+          <FormSelect
+            value={orderCustomerValue}
+            isRequired
+            onChange={this.handleOrderCustomerChange}
+            id="horzontal-form-customer"
+            name="horizontal-form-customer"
+          >
+            {customerDrawerOptions.map((customer, index) => (
+              <FormSelectOption
+                isDisabled={customer.disabled}
+                key={index}
+                value={customer.value}
+                label={customer.label}
+              />
+            ))}
+          </FormSelect>
+        </FormGroup>
+
+        <FormGroup label="Articles" fieldId="horizontal-form-articles">
+          <FormSelect
+            value={orderArticleValue}
+            isRequired
+            onChange={this.handleOrderArticleChange}
+            id="horzontal-form-articles"
+            name="horizontal-form-articles"
+          >
+            {articleDrawerOptions.map((article, index) => (
+              <FormSelectOption
+                isDisabled={article.disabled}
+                key={index}
+                value={article.value}
+                label={article.label}
+              />
+            ))}
+          </FormSelect>
+        </FormGroup>
+
         <ActionGroup>{button}</ActionGroup>
       </Form>
     );
@@ -592,7 +680,7 @@ class Orders extends Component {
           order.shipping,
           order.notes,
           order.status,
-          order.customer.first_name || order.customer.last_name,
+          order.customer.first_name.concat(" ", order.customer.last_name),
           order.articles
             .map(function (e) {
               return e.name;

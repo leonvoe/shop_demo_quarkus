@@ -8,13 +8,15 @@ import org.acme.model.Status;
 import java.util.List;
 
 public class OrderDTO {
+    private Long id;
     private Shipping shipping;
     private String notes;
     private Status status;
     private CustomerDTO customer;
     private List<ArticleDTO> articles;
 
-    public OrderDTO(Shipping shipping, String notes, Status status, CustomerDTO customer, List<ArticleDTO> articles) {
+    public OrderDTO(Long id, Shipping shipping, String notes, Status status, CustomerDTO customer, List<ArticleDTO> articles) {
+        this.id = id;
         this.shipping = shipping;
         this.notes = notes;
         this.status = status;
@@ -23,6 +25,14 @@ public class OrderDTO {
     }
 
     public OrderDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Shipping getShipping() {

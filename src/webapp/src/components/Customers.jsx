@@ -239,6 +239,7 @@ class Customers extends Component {
       last_name: this.state.customerLastNameValue,
       username: this.state.customerUsernameValue,
       password: this.state.customerPasswordValue,
+      dob: this.state.customerDobValue,
       gender: this.state.customerGenderDrawerValue,
     });
 
