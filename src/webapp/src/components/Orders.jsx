@@ -28,14 +28,12 @@ import {
   DrawerCloseButton,
   Form,
   FormGroup,
-  TextArea,
   FormSelect,
   FormSelectOption,
   ActionGroup,
   Select,
   SelectVariant,
   SelectOption,
-  DatePicker,
 } from "@patternfly/react-core";
 
 import {
@@ -78,6 +76,8 @@ class Orders extends Component {
         { title: "Customer", transforms: [sortable] },
         { title: "Articles", transforms: [sortable] },
       ],
+      orderArticleValue: [],
+
       sortBy: {},
       page: "0",
       perPage: "10",
@@ -89,14 +89,15 @@ class Orders extends Component {
       statusSelected: null,
       shippingIsExpanded: false,
       shippingSelected: null,
+      isOpenOrderArticles: false,
 
       orderIdValue: undefined,
       orderNotesValue: "",
       orderShippingDrawerValue: undefined,
       orderStatusDrawerValue: undefined,
       orderCustomerValue: undefined,
-      orderArticleValue: undefined,
     };
+
     this.drawerRef = React.createRef();
     this.onSort = this.onSort.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
@@ -113,8 +114,42 @@ class Orders extends Component {
     this.handleOrderCustomerChange = (orderCustomerValue) => {
       this.setState({ orderCustomerValue });
     };
-    this.handleOrderArticleChange = (orderArticleValue) => {
-      this.setState({ orderArticleValue });
+
+    this.onToggleOrderArticles = (isOpenOrderArticles) => {
+      console.log(this.state.orderArticleValue);
+
+      this.setState({
+        isOpenOrderArticles,
+      });
+    };
+
+    this.onSelectOrderArticles = (event, selection) => {
+      const orderArticleValue = this.state.orderArticleValue;
+
+      if (orderArticleValue.includes(selection)) {
+        this.setState(
+          (prevState) => ({
+            orderArticleValue: prevState.orderArticleValue.filter(
+              (item) => item !== selection
+            ),
+          }),
+          () => console.log("selections: ", this.state.orderArticleValue)
+        );
+      } else {
+        this.setState(
+          (prevState) => ({
+            orderArticleValue: [...prevState.orderArticleValue, selection],
+          }),
+          () => console.log("selections: ", this.state.orderArticleValue)
+        );
+      }
+    };
+
+    this.clearSelectionOrderArticles = () => {
+      this.setState({
+        orderArticleValue: [],
+        isOpenOrderArticles: false,
+      });
     };
 
     this.statusDrawerOptions = [
@@ -174,7 +209,7 @@ class Orders extends Component {
       this.setState({
         isExpanded: false,
         orderNotesValue: "",
-        orderArticleValue: undefined,
+        orderArticleValue: [],
         orderCustomerValue: undefined,
         orderShippingDrawerValue: undefined,
         orderStatusDrawerValue: undefined,
@@ -272,20 +307,31 @@ class Orders extends Component {
   };
 
   post = () => {
-    console.log(this.state.orderArticleValue, this.state.orderCustomerValue);
+    const orderArticleValueIds = this.state.orderArticleValue
+      .map((article) =>
+        this.state.articles.find((item) => {
+          return item.name === article;
+        })
+      )
+      .map((article) => {
+        return { id: article.id };
+      });
+
+    console.log(orderArticleValueIds);
+
     orderApi.post("/", {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
       customer: { id: this.state.orderCustomerValue },
-      articles: [{ id: this.state.orderArticleValue }],
+      articles: orderArticleValueIds,
     });
 
     this.setState({
       isExpanded: false,
       orderNotesValue: "",
       orderCustomerValue: undefined,
-      orderArticleValue: undefined,
+      orderArticleValue: [],
       page: "0",
       perPage: "10",
       orderShippingDrawerValue: undefined,
@@ -314,7 +360,7 @@ class Orders extends Component {
       isExpanded: false,
       orderNotesValue: "",
       orderCustomerValue: "",
-      orderArticleValue: "",
+      orderArticleValue: [],
       page: "0",
       perPage: "10",
       orderShippingDrawerValue: undefined,
@@ -330,7 +376,7 @@ class Orders extends Component {
       isExpanded: false,
       orderNotesValue: "",
       orderCustomerValue: "",
-      orderArticleValue: "",
+      orderArticleValue: [],
       page: "0",
       perPage: "10",
       orderShippingDrawerValue: undefined,
@@ -411,10 +457,9 @@ class Orders extends Component {
       isExpanded: true,
       orderNotesValue: order.notes,
       orderCustomerValue: order.customer.id,
-      orderArticleValue: order.article,
+      orderArticleValue: order.articles.map((article) => article.name),
       orderIdValue: order.id,
     });
-    console.log(order.id);
   }
 
   render() {
@@ -433,6 +478,7 @@ class Orders extends Component {
       shippingSelected,
       statusIsExpanded,
       statusSelected,
+      isOpenOrderArticles,
     } = this.state;
 
     let button;
@@ -468,8 +514,10 @@ class Orders extends Component {
     let articleDrawerOptions = this.state.articles.map((article) => {
       const container = {};
 
-      container.value = article.id;
-      container.label = article.name;
+      container.id = article.id;
+      container.value = article.name;
+      container.description = article.description;
+      container.disabled = false;
 
       return container;
     });
@@ -634,23 +682,29 @@ class Orders extends Component {
           </FormSelect>
         </FormGroup>
 
-        <FormGroup label="Articles" fieldId="horizontal-form-articles">
-          <FormSelect
-            value={orderArticleValue}
-            isRequired
-            onChange={this.handleOrderArticleChange}
-            id="horzontal-form-articles"
-            name="horizontal-form-articles"
+        <FormGroup>
+          <Select
+            variant={SelectVariant.typeaheadMulti}
+            typeAheadAriaLabel="Select articles"
+            onToggle={this.onToggleOrderArticles}
+            onSelect={this.onSelectOrderArticles}
+            onClear={this.clearSelectionOrderArticles}
+            selections={orderArticleValue}
+            isOpen={isOpenOrderArticles}
+            aria-labelledby="multi-typeahead-select-id-1"
+            placeholderText="Select articles"
           >
             {articleDrawerOptions.map((article, index) => (
-              <FormSelectOption
+              <SelectOption
                 isDisabled={article.disabled}
-                key={index}
+                key={article.id}
                 value={article.value}
-                label={article.label}
+                {...(article.description && {
+                  description: article.description,
+                })}
               />
             ))}
-          </FormSelect>
+          </Select>
         </FormGroup>
 
         <ActionGroup>{button}</ActionGroup>

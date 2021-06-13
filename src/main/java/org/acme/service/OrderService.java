@@ -51,10 +51,7 @@ public class OrderService {
 
     }
 
-    public List<OrderDTO> findAllByNotesAndShippingAndStatus(String searchVal, String filterValShipping, String filterValStatus) {
-        System.out.println(filterValShipping);
-        System.out.println(filterValStatus);
-
+    public List<OrderDTO> findAllByNotesAndShippingAndStatus(String searchVal, String filterValStatus, String filterValShipping) {
         Shipping filterValEnumShipping = null;
         Status filterValEnumStatus = null;
 
@@ -71,9 +68,8 @@ public class OrderService {
             case "DPD":
                 filterValEnumShipping = Shipping.DPD;
                 break;
-
             default:
-                filterValShipping = "";
+                filterValEnumShipping = null;
                 break;
         }
 
@@ -90,17 +86,24 @@ public class OrderService {
                 break;
 
             default:
-                filterValStatus = "";
+                filterValEnumStatus = null;
                 break;
         }
 
-        if(filterValStatus.equals("") && filterValShipping.equals("")) {
+        /*if(filterValStatus.equals("Status") && filterValShipping.equals("Shipping")) {
             filteredOrders = Order.list("notes = ?1", searchVal);
         }
-        else {
-            filteredOrders = Order.list("shipping = ?1", filterValEnumShipping);
-            //filteredOrders.( Order.list("shipping = ?1", filterValEnumShipping));
+        else if(!filterValStatus.equals("Status") && filterValShipping.equals("Shipping")) {
+            filteredOrders = Order.list("select o from Order o where status = ?1", filterValEnumStatus);
+
         }
+        else if(filterValStatus.equals("Status") && !filterValShipping.equals("Shipping")) {
+            filteredOrders = Order.list("select o from Order o where shipping = ?1", filterValEnumShipping);
+
+        }
+        else {*/
+            filteredOrders = Order.list("select o from Order o where o.shipping = ?1 or o.status = ?2 or o.notes = ?3", filterValEnumShipping, filterValEnumStatus, searchVal);
+        //}
         filteredOrders.stream().forEach(o -> orderDTOList.add(orderDTOMapper.toResource(o)));
 
         return orderDTOList;
