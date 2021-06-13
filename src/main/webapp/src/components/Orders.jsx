@@ -95,7 +95,7 @@ class Orders extends Component {
       orderNotesValue: "",
       orderShippingDrawerValue: undefined,
       orderStatusDrawerValue: undefined,
-      orderCustomerValue: undefined,
+      orderCustomerValue: null,
     };
 
     this.drawerRef = React.createRef();
@@ -317,8 +317,6 @@ class Orders extends Component {
         return { id: article.id };
       });
 
-    console.log(orderArticleValueIds);
-
     orderApi.post("/", {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
@@ -341,19 +339,22 @@ class Orders extends Component {
   };
 
   update = () => {
-    console.log(
-      this.state.orderShippingDrawerValue,
-      this.state.orderNotesValue,
-      this.state.orderStatusDrawerValue,
-      this.state.orderCustomerValue,
-      this.state.orderArticleValue
-    );
+    const orderArticleValueIds = this.state.orderArticleValue
+      .map((article) =>
+        this.state.articles.find((item) => {
+          return item.name === article;
+        })
+      )
+      .map((article) => {
+        return { id: article.id };
+      });
+
     orderApi.put("/" + this.state.orderIdValue, {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
       customer: { id: this.state.orderCustomerValue },
-      articles: [{ id: this.state.orderArticleValue }],
+      articles: orderArticleValueIds,
     });
 
     this.setState({
@@ -682,7 +683,7 @@ class Orders extends Component {
           </FormSelect>
         </FormGroup>
 
-        <FormGroup>
+        <FormGroup label="Articles" fieldId="horizontal-form-articles">
           <Select
             variant={SelectVariant.typeaheadMulti}
             typeAheadAriaLabel="Select articles"
