@@ -29,3 +29,11 @@
   text-decoration: none;
   color: white;
 }
+
+.tooltip {
+  margin-right: 1rem;
+}
+
+.pageHeaderTools {
+  margin-top: 4rem;
+}

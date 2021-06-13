@@ -18,7 +18,10 @@ import {
   PageSidebar,
   PageSection,
   PageSectionVariants,
+  Tooltip,
 } from "@patternfly/react-core";
+
+import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 
 class PageComponent extends React.Component {
   constructor(props) {
@@ -43,7 +46,27 @@ class PageComponent extends React.Component {
             Webshop
           </Link>
         }
-        headerTools={<PageHeaderTools>Sign-In</PageHeaderTools>}
+        headerTools={
+          <PageHeaderTools>
+            <Tooltip
+              position="left"
+              enableFlip={false}
+              content={
+                <div className="pageHeaderTools">
+                  This feature has not yet been implemented. However, Basic Auth
+                  by directly calling the API is already possible. Comment the
+                  security-related lines in the application.properties and
+                  Customer.java file and you are ready to go!{" "}
+                </div>
+              }
+            >
+              <span aria-label="tooltip" className="tooltip" tabIndex="0">
+                <OutlinedQuestionCircleIcon />
+              </span>
+            </Tooltip>
+            Sign-In
+          </PageHeaderTools>
+        }
         showNavToggle
         isNavOpen={isNavOpen}
         onNavToggle={this.onNavToggle}
