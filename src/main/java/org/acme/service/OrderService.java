@@ -2,7 +2,6 @@ package org.acme.service;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import org.acme.dto.CustomerDTO;
 import org.acme.dto.OrderDTO;
 import org.acme.dto.OrderDTOMapper;
 import org.acme.dto.OrderEntityMapper;
@@ -79,7 +78,6 @@ public class OrderService {
                 break;
             case "Delivering":
                 filterValEnumStatus = Status.DELIVERING;
-                System.out.println("Delivering!!!!!!");
                 break;
             case "Delivered":
                 filterValEnumStatus = Status.DELIVERED;
