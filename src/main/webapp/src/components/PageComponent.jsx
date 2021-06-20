@@ -53,10 +53,11 @@ class PageComponent extends React.Component {
               enableFlip={false}
               content={
                 <div className="pageHeaderTools">
-                  This feature has not yet been implemented. However, Basic Auth
+                  This feature has not been implemented yet. However, Basic Auth
                   by directly calling the API is already possible. Comment the
                   security-related lines in the application.properties and
-                  Customer.java file and you are ready to go!{" "}
+                  Customer.java file in the Quarkus Application and you are
+                  ready to go!{" "}
                 </div>
               }
             >

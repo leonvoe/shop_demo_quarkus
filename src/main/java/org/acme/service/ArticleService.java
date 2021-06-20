@@ -39,7 +39,6 @@ public class ArticleService {
         }
 
         return articleDTOList;
-
     }
 
 
@@ -118,23 +117,18 @@ public class ArticleService {
                 break;
             case BOOKS:
                 category=2;
-
                 break;
             case MOVIES:
                 category=3;
-
                 break;
             case GAMES:
                 category=4;
-
                 break;
             case MUSIC:
                 category=5;
-
                 break;
             default:
                 break;
-
         }
         Article.update("name = '" + newArticleDTO.getName() + "', description ='" + newArticleDTO.getDescription() + "', category = '" + category + "' where id = ?1", id);
     }
