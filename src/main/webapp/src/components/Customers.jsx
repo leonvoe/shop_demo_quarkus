@@ -36,6 +36,12 @@ import {
   SelectVariant,
   SelectOption,
   DatePicker,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
+  Bullseye,
 } from "@patternfly/react-core";
 
 import {
@@ -308,33 +314,35 @@ class Customers extends Component {
   }
 
   onRowClick(_event, row) {
-    const customer = this.state.customers[row.secretTableRowKeyId];
+    if (this.state.length !== 0) {
+      const customer = this.state.customers[row.secretTableRowKeyId];
 
-    switch (customer.gender) {
-      case "MALE":
-        this.setState({ customerGenderDrawerValue: 0 });
-        break;
-      case "FEMALE":
-        this.setState({ customerGenderDrawerValue: 1 });
-        break;
-      case "DIVERSE":
-        this.setState({ customerGenderDrawerValue: 2 });
-        break;
-      default:
-        this.setState({ customerGenderDrawerValue: undefined });
-        break;
+      switch (customer.gender) {
+        case "MALE":
+          this.setState({ customerGenderDrawerValue: 0 });
+          break;
+        case "FEMALE":
+          this.setState({ customerGenderDrawerValue: 1 });
+          break;
+        case "DIVERSE":
+          this.setState({ customerGenderDrawerValue: 2 });
+          break;
+        default:
+          this.setState({ customerGenderDrawerValue: undefined });
+          break;
+      }
+
+      this.setState({
+        drawerEdit: true,
+        isExpanded: true,
+        customerFirstNameValue: customer.first_name,
+        customerLastNameValue: customer.last_name,
+        customerUsernameValue: customer.username,
+        customerPasswordValue: customer.password,
+        customerDobValue: customer.dob,
+        customerIdValue: customer.id,
+      });
     }
-
-    this.setState({
-      drawerEdit: true,
-      isExpanded: true,
-      customerFirstNameValue: customer.first_name,
-      customerLastNameValue: customer.last_name,
-      customerUsernameValue: customer.username,
-      customerPasswordValue: customer.password,
-      customerDobValue: customer.dob,
-      customerIdValue: customer.id,
-    });
   }
 
   render() {
@@ -373,6 +381,44 @@ class Customers extends Component {
           </Button>
         </div>
       );
+    }
+
+    let rows;
+
+    if (this.state.length !== 0) {
+      rows = customers.map((customer, index) => [
+        customer.first_name,
+        customer.last_name,
+        customer.username,
+        customer.dob,
+        customer.gender,
+      ]);
+    } else {
+      rows = [
+        {
+          heightAuto: true,
+          cells: [
+            {
+              props: { colSpan: 8 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      No results found
+                    </Title>
+                    <EmptyStateBody>
+                      Either no results match the filter criteria, or there are
+                      no customers listed yet. Remove all filters or add a
+                      customer to show results.
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              ),
+            },
+          ],
+        },
+      ];
     }
 
     const toolbarItems = (
@@ -539,13 +585,7 @@ class Customers extends Component {
         sortBy={sortBy}
         onSort={this.onSort}
         cells={columns}
-        rows={customers.map((customer, index) => [
-          customer.first_name,
-          customer.last_name,
-          customer.username,
-          customer.dob,
-          customer.gender,
-        ])}
+        rows={rows}
       >
         <TableHeader />
         <TableBody onRowClick={this.onRowClick} />

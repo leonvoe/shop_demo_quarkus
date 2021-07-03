@@ -36,6 +36,12 @@ import {
   Select,
   SelectVariant,
   SelectOption,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
+  Bullseye,
 } from "@patternfly/react-core";
 
 import {
@@ -290,39 +296,41 @@ class Articles extends Component {
   }
 
   onRowClick(_event, row) {
-    const article = this.state.articles[row.secretTableRowKeyId];
+    if (this.state.length !== 0) {
+      const article = this.state.articles[row.secretTableRowKeyId];
 
-    switch (article.category) {
-      case "TOYS":
-        this.setState({ articleCategoryDrawerValue: 0 });
-        break;
-      case "FASHION":
-        this.setState({ articleCategoryDrawerValue: 1 });
-        break;
-      case "BOOKS":
-        this.setState({ articleCategoryDrawerValue: 2 });
-        break;
-      case "MOVIES":
-        this.setState({ articleCategoryDrawerValue: 3 });
-        break;
-      case "GAMES":
-        this.setState({ articleCategoryDrawerValue: 4 });
-        break;
-      case "MUSIC":
-        this.setState({ articleCategoryDrawerValue: 5 });
-        break;
+      switch (article.category) {
+        case "TOYS":
+          this.setState({ articleCategoryDrawerValue: 0 });
+          break;
+        case "FASHION":
+          this.setState({ articleCategoryDrawerValue: 1 });
+          break;
+        case "BOOKS":
+          this.setState({ articleCategoryDrawerValue: 2 });
+          break;
+        case "MOVIES":
+          this.setState({ articleCategoryDrawerValue: 3 });
+          break;
+        case "GAMES":
+          this.setState({ articleCategoryDrawerValue: 4 });
+          break;
+        case "MUSIC":
+          this.setState({ articleCategoryDrawerValue: 5 });
+          break;
 
-      default:
-        this.setState({ articleCategoryDrawerValue: undefined });
-        break;
+        default:
+          this.setState({ articleCategoryDrawerValue: undefined });
+          break;
+      }
+      this.setState({
+        drawerEdit: true,
+        isExpanded: true,
+        articleNameValue: article.name,
+        articleDescriptionValue: article.description,
+        articleIdValue: article.id,
+      });
     }
-    this.setState({
-      drawerEdit: true,
-      isExpanded: true,
-      articleNameValue: article.name,
-      articleDescriptionValue: article.description,
-      articleIdValue: article.id,
-    });
   }
 
   render() {
@@ -358,6 +366,42 @@ class Articles extends Component {
           </Button>
         </div>
       );
+    }
+
+    let rows;
+
+    if (this.state.length !== 0) {
+      rows = articles.map((article, index) => [
+        article.name,
+        article.description,
+        article.category,
+      ]);
+    } else {
+      rows = [
+        {
+          heightAuto: true,
+          cells: [
+            {
+              props: { colSpan: 8 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      No results found
+                    </Title>
+                    <EmptyStateBody>
+                      Either no results match the filter criteria, or there are
+                      no articles listed yet. Remove all filters or add an
+                      article to show results.
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              ),
+            },
+          ],
+        },
+      ];
     }
 
     const toolbarItems = (
@@ -498,11 +542,7 @@ class Articles extends Component {
         sortBy={sortBy}
         onSort={this.onSort}
         cells={columns}
-        rows={articles.map((article, index) => [
-          article.name,
-          article.description,
-          article.category,
-        ])}
+        rows={rows}
       >
         <TableHeader />
         <TableBody onRowClick={this.onRowClick} />

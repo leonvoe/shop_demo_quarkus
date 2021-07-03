@@ -34,6 +34,12 @@ import {
   Select,
   SelectVariant,
   SelectOption,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
+  Bullseye,
 } from "@patternfly/react-core";
 
 import {
@@ -423,46 +429,48 @@ class Orders extends Component {
   }
 
   onRowClick(_event, row) {
-    const order = this.state.orders[row.secretTableRowKeyId];
+    if (this.state.length !== 0) {
+      const order = this.state.orders[row.secretTableRowKeyId];
 
-    switch (order.status) {
-      case "INPROGRESS":
-        this.setState({ orderStatusDrawerValue: 0 });
-        break;
-      case "DELIVERING":
-        this.setState({ orderStatusDrawerValue: 1 });
-        break;
-      case "DELIVERED":
-        this.setState({ orderStatusDrawerValue: 2 });
-        break;
-      default:
-        this.setState({ orderStatusDrawerValue: undefined });
-        break;
+      switch (order.status) {
+        case "INPROGRESS":
+          this.setState({ orderStatusDrawerValue: 0 });
+          break;
+        case "DELIVERING":
+          this.setState({ orderStatusDrawerValue: 1 });
+          break;
+        case "DELIVERED":
+          this.setState({ orderStatusDrawerValue: 2 });
+          break;
+        default:
+          this.setState({ orderStatusDrawerValue: undefined });
+          break;
+      }
+
+      switch (order.shipping) {
+        case "DHL":
+          this.setState({ orderShippingDrawerValue: 0 });
+          break;
+        case "HERMES":
+          this.setState({ orderShippingDrawerValue: 1 });
+          break;
+        case "DPD":
+          this.setState({ orderShippingDrawerValue: 2 });
+          break;
+        default:
+          this.setState({ orderShippingDrawerValue: undefined });
+          break;
+      }
+
+      this.setState({
+        drawerEdit: true,
+        isExpanded: true,
+        orderNotesValue: order.notes,
+        orderCustomerValue: order.customer.id,
+        orderArticleValue: order.articles.map((article) => article.name),
+        orderIdValue: order.id,
+      });
     }
-
-    switch (order.shipping) {
-      case "DHL":
-        this.setState({ orderShippingDrawerValue: 0 });
-        break;
-      case "HERMES":
-        this.setState({ orderShippingDrawerValue: 1 });
-        break;
-      case "DPD":
-        this.setState({ orderShippingDrawerValue: 2 });
-        break;
-      default:
-        this.setState({ orderShippingDrawerValue: undefined });
-        break;
-    }
-
-    this.setState({
-      drawerEdit: true,
-      isExpanded: true,
-      orderNotesValue: order.notes,
-      orderCustomerValue: order.customer.id,
-      orderArticleValue: order.articles.map((article) => article.name),
-      orderIdValue: order.id,
-    });
   }
 
   render() {
@@ -503,6 +511,48 @@ class Orders extends Component {
           </Button>
         </div>
       );
+    }
+
+    let rows;
+
+    if (this.state.length !== 0) {
+      rows = orders.map((order, index) => [
+        order.shipping,
+        order.notes,
+        order.status,
+        order.customer.first_name.concat(" ", order.customer.last_name),
+        order.articles
+          .map(function (e) {
+            return e.name;
+          })
+          .join(", "),
+      ]);
+    } else {
+      rows = [
+        {
+          heightAuto: true,
+          cells: [
+            {
+              props: { colSpan: 8 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      No results found
+                    </Title>
+                    <EmptyStateBody>
+                      Either no results match the filter criteria, or there are
+                      no orders listed yet. Remove all filters or add an order
+                      to show results.
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              ),
+            },
+          ],
+        },
+      ];
     }
 
     let customerDrawerOptions = this.state.customers.map((customer) => {
@@ -733,17 +783,7 @@ class Orders extends Component {
         sortBy={sortBy}
         onSort={this.onSort}
         cells={columns}
-        rows={orders.map((order, index) => [
-          order.shipping,
-          order.notes,
-          order.status,
-          order.customer.first_name.concat(" ", order.customer.last_name),
-          order.articles
-            .map(function (e) {
-              return e.name;
-            })
-            .join(", "),
-        ])}
+        rows={rows}
       >
         <TableHeader />
         <TableBody onRowClick={this.onRowClick} />
