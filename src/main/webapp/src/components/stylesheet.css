@@ -1,0 +1,47 @@
+.pf-c-page__sidebar-body {
+  margin-bottom: 190%;
+}
+
+#page {
+  background-color: white;
+}
+
+.pf-c-page__header-brand-link {
+  text-decoration: none;
+  color: white;
+  font-size: 2rem;
+  margin-left: 0.9rem;
+}
+
+#pagintation-options-menu-top-6 {
+  background-color: green;
+}
+
+#pagination {
+  display: flex;
+}
+
+#deleteButton {
+  margin-top: 0.5rem;
+}
+
+.webshopLink {
+  text-decoration: none;
+  color: white;
+}
+
+.tooltip {
+  margin-right: 1rem;
+}
+
+.pageHeaderTools {
+  margin-top: 4rem;
+}
+
+/* .pf-c-page {
+  --pf-c-page__header--BackgroundColor: green;
+}
+
+.pf-c-nav {
+  --pf-c-nav__link--active--BackgroundColor: green;
+} */
