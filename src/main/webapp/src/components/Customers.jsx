@@ -89,6 +89,22 @@ class Customers extends Component {
       customerPasswordValue: "",
       customerDobValue: undefined,
       customerGenderDrawerValue: undefined,
+
+      invalidTextFirstName: "Only letters accepted in name",
+      validatedFirstName: "default",
+      helperTextFirstName: "Enter your first name to continue",
+
+      invalidTextLastName: "Only letters accepted in name",
+      validatedLastName: "default",
+      helperTextLastName: "Enter your last name to continue",
+
+      invalidTextPassword: "Passwords have to be at least 6 characters long",
+      validatedPassword: "default",
+      helperTextPassword: "Enter your password to continue",
+
+      invalidTextDob: "Customers have to be at least 18 years old",
+      validatedDob: "default",
+      helperTextDob: "Enter your date of birth to continue",
     };
     this.drawerRef = React.createRef();
     this.onSort = this.onSort.bind(this);
@@ -96,19 +112,75 @@ class Customers extends Component {
 
     this.handleCustomerFirstNameChange = (customerFirstNameValue) => {
       this.setState({ customerFirstNameValue });
+
+      var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+      if (format.test(customerFirstNameValue)) {
+        this.setState({
+          validatedFirstName: "error",
+          invalidTextFirstName: "Only letters accepted in name",
+        });
+      } else {
+        this.setState({
+          validatedFirstName: "success",
+          helperTextFirstName: "",
+        });
+      }
     };
     this.handleCustomerLastNameChange = (customerLastNameValue) => {
       this.setState({ customerLastNameValue });
+
+      var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+      if (format.test(customerLastNameValue)) {
+        this.setState({
+          validatedLastName: "error",
+          invalidTextLastName: "Only letters accepted in name",
+        });
+      } else {
+        this.setState({
+          validatedLastName: "success",
+          helperTextLastName: "",
+        });
+      }
     };
     this.handleCustomerUsernameChange = (customerUsernameValue) => {
       this.setState({ customerUsernameValue });
     };
     this.handleCustomerPasswordChange = (customerPasswordValue) => {
       this.setState({ customerPasswordValue });
+
+      if (customerPasswordValue.length < 6) {
+        this.setState({
+          validatedPassword: "error",
+          invalidTextPassword:
+            "Passwords have to be at least 6 characters long",
+        });
+      } else {
+        this.setState({
+          validatedPassword: "success",
+          helperTextPassword: "",
+        });
+      }
     };
     this.handleCustomerDobChange = (customerDobValue) => {
-      console.log(customerDobValue);
       this.setState({ customerDobValue });
+
+      var dateInput = new Date(customerDobValue);
+      var date = new Date();
+      date.setFullYear(date.getFullYear() - 18);
+
+      if (dateInput <= date) {
+        this.setState({
+          validatedDob: "success",
+          helperTextDob: "",
+        });
+      } else {
+        this.setState({
+          validatedDob: "error",
+          invalidTextDob: "Customers have to be at least 18 years old",
+        });
+      }
     };
     this.handleCustomerGenderChange = (customerGenderDrawerValue) => {
       this.setState({ customerGenderDrawerValue });
@@ -161,10 +233,31 @@ class Customers extends Component {
         customerUsernameValue: "",
         customerPasswordValue: "",
         customerGenderDrawerValue: undefined,
+
+        invalidTextFirstName: "Only letters accepted in name",
+        validatedFirstName: "default",
+        helperTextFirstName: "Enter your first name to continue",
+
+        invalidTextLastName: "Only letters accepted in name",
+        validatedLastName: "default",
+        helperTextLastName: "Enter your last name to continue",
+
+        invalidTextPassword: "Passwords have to be at least 6 characters long",
+        validatedPassword: "default",
+        helperTextPassword: "Enter your password to continue",
+
+        invalidTextDob: "Customers have to be at least 18 years old",
+        validatedDob: "default",
+        helperTextDob: "Enter your date of birth to continue",
       });
     };
 
     this.onSearchValueChange = (inputValue) => {
+      console.log(
+        this.state.customers.filter((customer) =>
+          customer.last_name.match(inputValue)
+        )
+      );
       this.setState({
         searchValue: inputValue,
       });
@@ -280,7 +373,7 @@ class Customers extends Component {
     });
   };
 
-  search = () => {
+  /* search = () => {
     const params = {
       search: this.state.searchValue,
       filter: this.state.genderSelected,
@@ -288,7 +381,7 @@ class Customers extends Component {
     api.get("/search", { params }).then((res) => {
       this.setState({ customers: res.data });
     });
-  };
+  }; */
 
   deleteSearch = () => {
     this.setState({ searchValue: "" });
@@ -360,6 +453,18 @@ class Customers extends Component {
       drawerEdit,
       genderIsExpanded,
       genderSelected,
+      invalidTextDob,
+      invalidTextFirstName,
+      invalidTextLastName,
+      invalidTextPassword,
+      validatedDob,
+      validatedFirstName,
+      validatedLastName,
+      validatedPassword,
+      helperTextDob,
+      helperTextFirstName,
+      helperTextLastName,
+      helperTextPassword,
     } = this.state;
 
     let button;
@@ -433,13 +538,13 @@ class Customers extends Component {
               onChange={this.onSearchValueChange}
               value={this.state.searchValue}
             />
-            <Button
+            {/* <Button
               variant={ButtonVariant.control}
               aria-label="search button for search input"
               onClick={this.search}
             >
               <SearchIcon />
-            </Button>
+            </Button> */}
             <Button
               variant={ButtonVariant.control}
               aria-label="delete button for search input"
@@ -493,9 +598,17 @@ class Customers extends Component {
 
     const formContent = (
       <Form isHorizontal>
-        <FormGroup label="First Name" isRequired fieldId="horizontal-form-name">
+        <FormGroup
+          label="First Name"
+          isRequired
+          fieldId="horizontal-form-firstName"
+          helperText={helperTextFirstName}
+          helperTextInvalid={invalidTextFirstName}
+          validated={validatedFirstName}
+        >
           <TextInput
             value={customerFirstNameValue}
+            validated={validatedFirstName}
             isRequired
             type="text"
             id="horizontal-form-name"
@@ -504,9 +617,17 @@ class Customers extends Component {
             onChange={this.handleCustomerFirstNameChange}
           />
         </FormGroup>
-        <FormGroup label="Last Name" isRequired fieldId="horizontal-form-name">
+        <FormGroup
+          label="Last Name"
+          isRequired
+          fieldId="horizontal-form-lastName"
+          helperText={helperTextLastName}
+          helperTextInvalid={invalidTextLastName}
+          validated={validatedLastName}
+        >
           <TextInput
             value={customerLastNameValue}
+            validated={validatedLastName}
             isRequired
             type="text"
             id="horizontal-form-name"
@@ -515,7 +636,11 @@ class Customers extends Component {
             onChange={this.handleCustomerLastNameChange}
           />
         </FormGroup>
-        <FormGroup label="Username" isRequired fieldId="horizontal-form-name">
+        <FormGroup
+          label="Username"
+          isRequired
+          fieldId="horizontal-form-username"
+        >
           <TextInput
             value={customerUsernameValue}
             isRequired
@@ -526,9 +651,17 @@ class Customers extends Component {
             onChange={this.handleCustomerUsernameChange}
           />
         </FormGroup>
-        <FormGroup label="Password" isRequired fieldId="horizontal-form-name">
+        <FormGroup
+          label="Password"
+          isRequired
+          fieldId="horizontal-form-password"
+          helperText={helperTextPassword}
+          helperTextInvalid={invalidTextPassword}
+          validated={validatedPassword}
+        >
           <TextInput
             value={customerPasswordValue}
+            validated={validatedPassword}
             isRequired
             type="password"
             id="horizontal-form-name"
@@ -537,13 +670,21 @@ class Customers extends Component {
             onChange={this.handleCustomerPasswordChange}
           />
         </FormGroup>
-        <FormGroup label="Date of birth">
+        <FormGroup
+          label="Date of birth"
+          isRequired
+          fieldId="horizontal-form-dob"
+          helperText={helperTextDob}
+          helperTextInvalid={invalidTextDob}
+          validated={validatedDob}
+        >
           <DatePicker
             value={customerDobValue}
+            validated={validatedDob}
             onChange={this.handleCustomerDobChange}
           />
         </FormGroup>
-        <FormGroup label="Gender" fieldId="horizontal-form-category">
+        <FormGroup label="Gender" fieldId="horizontal-form-gender">
           <FormSelect
             value={customerGenderDrawerValue}
             isRequired
