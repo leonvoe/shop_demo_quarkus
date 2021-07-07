@@ -75,6 +75,7 @@ class Orders extends Component {
 
     this.state = {
       orders: [],
+      filteredOrders: [],
       articles: [],
       customers: [],
       columns: [
@@ -94,9 +95,9 @@ class Orders extends Component {
       drawerEdit: false,
       searchValue: "",
       statusIsExpanded: false,
-      statusSelected: null,
+      statusSelected: "Status",
       shippingIsExpanded: false,
-      shippingSelected: null,
+      shippingSelected: "Shipping",
       isOpenOrderArticles: false,
 
       orderIdValue: undefined,
@@ -169,9 +170,9 @@ class Orders extends Component {
 
     this.statusSelectOptions = [
       { value: "Status", disabled: false, isPlaceholder: true },
-      { value: "In Progress", disabled: false },
-      { value: "Delivering", disabled: false },
-      { value: "Delivered", disabled: false },
+      { value: "INPROGRESS", disabled: false },
+      { value: "DELIVERING", disabled: false },
+      { value: "DELIVERED", disabled: false },
     ];
 
     this.shippingDrawerOptions = [
@@ -228,6 +229,104 @@ class Orders extends Component {
       this.setState({
         searchValue: inputValue,
       });
+
+      if (
+        (inputValue === "" || inputValue === null) &&
+        this.state.statusSelected === "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders,
+        });
+      } else if (
+        inputValue !== "" &&
+        inputValue !== null &&
+        this.state.statusSelected === "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.notes.match(inputValue) ||
+              order.customer.first_name.match(inputValue) ||
+              order.customer.last_name.match(inputValue)
+          ),
+        });
+      } else if (
+        (inputValue === "" || inputValue === null) &&
+        this.state.statusSelected !== "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) => order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        (inputValue === "" || inputValue === null) &&
+        this.state.statusSelected === "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        (inputValue === "" || inputValue === null) &&
+        this.state.statusSelected !== "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.status === this.state.statusSelected.toUpperCase() &&
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        inputValue !== "" &&
+        inputValue !== null &&
+        this.state.statusSelected !== "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(inputValue) ||
+                order.customer.first_name.match(inputValue) ||
+                order.customer.last_name.match(inputValue)) &&
+              order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        inputValue !== "" &&
+        inputValue !== null &&
+        this.state.statusSelected === "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(inputValue) ||
+                order.customer.first_name.match(inputValue) ||
+                order.customer.last_name.match(inputValue)) &&
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(inputValue) ||
+                order.customer.first_name.match(inputValue) ||
+                order.customer.last_name.match(inputValue)) &&
+              order.shipping === this.state.shippingSelected.toUpperCase() &&
+              order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.onShippingToggle = (isExpanded) => {
@@ -238,15 +337,107 @@ class Orders extends Component {
 
     this.onShippingSelect = (event, selection, isPlaceholder) => {
       if (isPlaceholder) this.clearShippingSelection();
-      this.setState(
-        {
-          shippingSelected: selection,
-          shippingIsExpanded: false,
-        },
-        function () {
-          this.search();
-        }
-      );
+      this.setState({
+        shippingSelected: selection,
+        shippingIsExpanded: false,
+      });
+
+      if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        this.state.statusSelected === "Status" &&
+        selection === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders,
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        this.state.statusSelected === "Status" &&
+        selection === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.notes.match(this.state.searchValue) ||
+              order.customer.first_name.match(this.state.searchValue) ||
+              order.customer.last_name.match(this.state.searchValue)
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        this.state.statusSelected !== "Status" &&
+        selection === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) => order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        this.state.statusSelected === "Status" &&
+        selection !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) => order.shipping === selection.toUpperCase()
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        this.state.statusSelected !== "Status" &&
+        selection !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.status === this.state.statusSelected.toUpperCase() &&
+              order.shipping === selection.toUpperCase()
+          ),
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        this.state.statusSelected !== "Status" &&
+        selection === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        this.state.statusSelected === "Status" &&
+        selection !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.shipping === selection.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.shipping === selection.toUpperCase() &&
+              order.status === this.state.statusSelected.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.clearShippingSelection = () => {
@@ -265,15 +456,108 @@ class Orders extends Component {
 
     this.onStatusSelect = (event, selection, isPlaceholder) => {
       if (isPlaceholder) this.clearStatusSelection();
-      this.setState(
-        {
-          statusSelected: selection,
-          statusIsExpanded: false,
-        },
-        function () {
-          this.search();
-        }
-      );
+      this.setState({
+        statusSelected: selection,
+        statusIsExpanded: false,
+      });
+
+      if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        selection === "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders,
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        selection === "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.notes.match(this.state.searchValue) ||
+              order.customer.first_name.match(this.state.searchValue) ||
+              order.customer.last_name.match(this.state.searchValue)
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        selection !== "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) => order.status === selection.toUpperCase()
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        selection === "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        (this.state.searchValue === "" || this.state.searchValue === null) &&
+        selection !== "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              order.status === selection.toUpperCase() &&
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        selection !== "Status" &&
+        this.state.shippingSelected === "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.status === selection.toUpperCase()
+          ),
+        });
+      } else if (
+        this.state.searchValue !== "" &&
+        this.state.searchValue !== null &&
+        selection === "Status" &&
+        this.state.shippingSelected !== "Shipping"
+      ) {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.shipping === this.state.shippingSelected.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredOrders: this.state.orders.filter(
+            (order) =>
+              (order.notes.match(this.state.searchValue) ||
+                order.customer.first_name.match(this.state.searchValue) ||
+                order.customer.last_name.match(this.state.searchValue)) &&
+              order.shipping === this.state.shippingSelected.toUpperCase() &&
+              order.status === selection.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.clearStatusSelection = () => {
@@ -311,6 +595,7 @@ class Orders extends Component {
 
     orderApi.get("/paginated", { params }).then((res) => {
       this.setState({ orders: res.data });
+      this.setState({ filteredOrders: res.data });
     });
   };
 
@@ -394,17 +679,6 @@ class Orders extends Component {
     });
   };
 
-  search = () => {
-    const params = {
-      search: this.state.searchValue,
-      statusFilter: this.state.statusSelected,
-      shippingFilter: this.state.shippingSelected,
-    };
-    orderApi.get("/search", { params }).then((res) => {
-      this.setState({ orders: res.data });
-    });
-  };
-
   deleteSearch = () => {
     this.setState({ searchValue: "" });
     this.fetch(this.state.page, this.state.perPage);
@@ -476,7 +750,7 @@ class Orders extends Component {
   render() {
     const {
       columns,
-      orders,
+      filteredOrders,
       sortBy,
       isExpanded,
       orderNotesValue,
@@ -516,7 +790,7 @@ class Orders extends Component {
     let rows;
 
     if (this.state.length !== 0) {
-      rows = orders.map((order, index) => [
+      rows = filteredOrders.map((order, index) => [
         order.shipping,
         order.notes,
         order.status,
@@ -587,20 +861,6 @@ class Orders extends Component {
               onChange={this.onSearchValueChange}
               value={this.state.searchValue}
             />
-            <Button
-              variant={ButtonVariant.control}
-              aria-label="search button for search input"
-              onClick={this.search}
-            >
-              <SearchIcon />
-            </Button>
-            <Button
-              variant={ButtonVariant.control}
-              aria-label="delete button for search input"
-              onClick={this.deleteSearch}
-            >
-              <TimesIcon />
-            </Button>
           </InputGroup>
         </ToolbarItem>
         <ToolbarItem>

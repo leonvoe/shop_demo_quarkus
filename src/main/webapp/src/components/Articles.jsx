@@ -81,7 +81,7 @@ class Articles extends Component {
       drawerEdit: false,
       searchValue: "",
       categoryIsExpanded: false,
-      categorySelected: null,
+      categorySelected: "Category",
 
       articleIdValue: undefined,
       articleCategoryDrawerValue: undefined,

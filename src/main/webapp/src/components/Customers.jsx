@@ -81,7 +81,7 @@ class Customers extends Component {
       drawerEdit: false,
       searchValue: "",
       genderIsExpanded: false,
-      genderSelected: null,
+      genderSelected: "Gender",
 
       customerIdValue: undefined,
       customerFirstNameValue: "",
