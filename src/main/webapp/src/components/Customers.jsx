@@ -65,6 +65,7 @@ class Customers extends Component {
 
     this.state = {
       customers: [],
+      filteredCustomers: [],
       columns: [
         { title: "First Name", transforms: [sortable] },
         { title: "Last Name", transforms: [sortable] },
@@ -253,14 +254,51 @@ class Customers extends Component {
     };
 
     this.onSearchValueChange = (inputValue) => {
-      console.log(
-        this.state.customers.filter((customer) =>
-          customer.last_name.match(inputValue)
-        )
-      );
       this.setState({
         searchValue: inputValue,
       });
+      if (
+        (this.state.genderSelected === "Gender" ||
+          this.state.genderSelected === null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers,
+        });
+      } else if (
+        (this.state.genderSelected === "Gender" ||
+          this.state.genderSelected === null) &&
+        this.state.searchValue !== ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) =>
+              customer.first_name.match(inputValue) ||
+              customer.last_name.match(inputValue) ||
+              customer.username.match(inputValue)
+          ),
+        });
+      } else if (
+        (this.state.genderSelected !== "Gender" ||
+          this.state.genderSelected !== null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) => customer.gender === this.state.genderSelected
+          ),
+        });
+      } else {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) =>
+              (customer.first_name.match(inputValue) ||
+                customer.last_name.match(inputValue) ||
+                customer.username.match(inputValue)) &&
+              customer.gender === this.state.genderSelected
+          ),
+        });
+      }
     };
 
     this.onGenderToggle = (isExpanded) => {
@@ -271,15 +309,50 @@ class Customers extends Component {
 
     this.onGenderSelect = (event, selection, isPlaceholder) => {
       if (isPlaceholder) this.clearGenderSelection();
-      this.setState(
-        {
-          genderSelected: selection,
-          genderIsExpanded: false,
-        },
-        function () {
-          this.search();
-        }
-      );
+      this.setState({
+        genderSelected: selection,
+        genderIsExpanded: false,
+      });
+
+      if (
+        (selection === "Gender" || selection === null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers,
+        });
+      } else if (
+        (selection === "Gender" || selection === null) &&
+        this.state.searchValue !== ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) =>
+              customer.first_name.match(this.state.searchValue) ||
+              customer.last_name.match(this.state.searchValue) ||
+              customer.username.match(this.state.searchValue)
+          ),
+        });
+      } else if (
+        (selection !== "Gender" || selection !== null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) => customer.gender === selection.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredCustomers: this.state.customers.filter(
+            (customer) =>
+              (customer.first_name.match(this.state.searchValue) ||
+                customer.last_name.match(this.state.searchValue) ||
+                customer.username.match(this.state.searchValue)) &&
+              customer.gender === selection.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.clearGenderSelection = () => {
@@ -287,7 +360,6 @@ class Customers extends Component {
         genderSelected: null,
         genderIsExpanded: false,
       });
-      this.fetch(this.state.page, this.state.perPageParameter);
     };
   }
 
@@ -305,6 +377,7 @@ class Customers extends Component {
 
     api.get("/paginated", { params }).then((res) => {
       this.setState({ customers: res.data });
+      this.setState({ filteredCustomers: res.data });
     });
   };
 
@@ -373,21 +446,6 @@ class Customers extends Component {
     });
   };
 
-  /* search = () => {
-    const params = {
-      search: this.state.searchValue,
-      filter: this.state.genderSelected,
-    };
-    api.get("/search", { params }).then((res) => {
-      this.setState({ customers: res.data });
-    });
-  }; */
-
-  deleteSearch = () => {
-    this.setState({ searchValue: "" });
-    this.fetch(this.state.page, this.state.perPage);
-  };
-
   componentDidMount() {
     this.fetch("0", "10");
   }
@@ -442,6 +500,7 @@ class Customers extends Component {
     const {
       columns,
       customers,
+      filteredCustomers,
       sortBy,
       isExpanded,
       customerFirstNameValue,
@@ -490,8 +549,8 @@ class Customers extends Component {
 
     let rows;
 
-    if (this.state.length !== 0) {
-      rows = customers.map((customer, index) => [
+    if (this.state.length !== 0 && filteredCustomers.length !== 0) {
+      rows = filteredCustomers.map((customer, index) => [
         customer.first_name,
         customer.last_name,
         customer.username,
@@ -538,20 +597,6 @@ class Customers extends Component {
               onChange={this.onSearchValueChange}
               value={this.state.searchValue}
             />
-            {/* <Button
-              variant={ButtonVariant.control}
-              aria-label="search button for search input"
-              onClick={this.search}
-            >
-              <SearchIcon />
-            </Button> */}
-            <Button
-              variant={ButtonVariant.control}
-              aria-label="delete button for search input"
-              onClick={this.deleteSearch}
-            >
-              <TimesIcon />
-            </Button>
           </InputGroup>
         </ToolbarItem>
         <ToolbarItem>

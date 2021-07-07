@@ -67,6 +67,7 @@ class Articles extends Component {
 
     this.state = {
       articles: [],
+      filteredArticles: [],
       columns: [
         { title: "Name", transforms: [sortable] },
         { title: "Description", transforms: [sortable] },
@@ -156,9 +157,52 @@ class Articles extends Component {
     };
 
     this.onSearchValueChange = (inputValue) => {
+      console.log(this.state.articles);
       this.setState({
         searchValue: inputValue,
       });
+      console.log("test");
+      if (
+        (this.state.categorySelected === "Category" ||
+          this.state.categorySelected === null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles,
+        });
+      } else if (
+        (this.state.categorySelected === "Category" ||
+          this.state.categorySelected === null) &&
+        this.state.searchValue !== ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) =>
+              article.name.match(inputValue) ||
+              article.description.match(inputValue)
+          ),
+        });
+      } else if (
+        (this.state.categorySelected !== "Category" ||
+          this.state.categorySelected !== null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) =>
+              article.category === this.state.categorySelected.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) =>
+              (article.name.match(inputValue) ||
+                article.description.match(inputValue)) &&
+              article.category === this.state.categorySelected.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.onCategoryToggle = (isExpanded) => {
@@ -170,15 +214,48 @@ class Articles extends Component {
     this.onCategorySelect = (event, selection, isPlaceholder) => {
       console.log(selection);
       if (isPlaceholder) this.clearCategorySelection();
-      this.setState(
-        {
-          categorySelected: selection,
-          categoryIsExpanded: false,
-        },
-        function () {
-          this.search();
-        }
-      );
+      this.setState({
+        categorySelected: selection,
+        categoryIsExpanded: false,
+      });
+
+      if (
+        (selection === "Category" || selection === null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles,
+        });
+      } else if (
+        (selection === "Category" || selection === null) &&
+        this.state.searchValue !== ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) =>
+              article.name.match(this.state.searchValue) ||
+              article.description.match(this.state.searchValue)
+          ),
+        });
+      } else if (
+        (selection !== "Category" || selection !== null) &&
+        this.state.searchValue === ""
+      ) {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) => article.category === selection.toUpperCase()
+          ),
+        });
+      } else {
+        this.setState({
+          filteredArticles: this.state.articles.filter(
+            (article) =>
+              (article.name.match(this.state.searchValue) ||
+                article.description.match(this.state.searchValue)) &&
+              article.category === selection.toUpperCase()
+          ),
+        });
+      }
     };
 
     this.clearCategorySelection = () => {
@@ -204,6 +281,7 @@ class Articles extends Component {
 
     api.get("/paginated", { params }).then((res) => {
       this.setState({ articles: res.data });
+      this.setState({ filteredArticles: res.data });
     });
   };
 
@@ -255,21 +333,6 @@ class Articles extends Component {
       articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
-  };
-
-  search = () => {
-    const params = {
-      search: this.state.searchValue,
-      filter: this.state.categorySelected,
-    };
-    api.get("/search", { params }).then((res) => {
-      this.setState({ articles: res.data });
-    });
-  };
-
-  deleteSearch = () => {
-    this.setState({ searchValue: "" });
-    this.fetch(this.state.page, this.state.perPage);
   };
 
   componentDidMount() {
@@ -336,7 +399,7 @@ class Articles extends Component {
   render() {
     const {
       columns,
-      articles,
+      filteredArticles,
       sortBy,
       isExpanded,
       articleNameValue,
@@ -370,8 +433,8 @@ class Articles extends Component {
 
     let rows;
 
-    if (this.state.length !== 0) {
-      rows = articles.map((article, index) => [
+    if (this.state.length !== 0 && filteredArticles.length !== 0) {
+      rows = filteredArticles.map((article, index) => [
         article.name,
         article.description,
         article.category,
@@ -411,25 +474,11 @@ class Articles extends Component {
             <TextInput
               name="searchInput"
               id="searchInput"
-              type="text"
+              type="search"
               aria-label="search input"
               onChange={this.onSearchValueChange}
               value={this.state.searchValue}
             />
-            <Button
-              variant={ButtonVariant.control}
-              aria-label="search button for search input"
-              onClick={this.search}
-            >
-              <SearchIcon />
-            </Button>
-            <Button
-              variant={ButtonVariant.control}
-              aria-label="delete button for search input"
-              onClick={this.deleteSearch}
-            >
-              <TimesIcon />
-            </Button>
           </InputGroup>
         </ToolbarItem>
         <ToolbarItem>
