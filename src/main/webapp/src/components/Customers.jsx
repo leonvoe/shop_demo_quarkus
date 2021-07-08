@@ -381,8 +381,8 @@ class Customers extends Component {
     });
   };
 
-  post = () => {
-    api.post("/", {
+  post = async () => {
+    await api.post("/", {
       first_name: this.state.customerFirstNameValue,
       last_name: this.state.customerLastNameValue,
       username: this.state.customerUsernameValue,
@@ -403,10 +403,13 @@ class Customers extends Component {
       customerIdValue: undefined,
       customerDobValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  update = () => {
-    api.put("/" + this.state.customerIdValue, {
+  update = async () => {
+    await api.put("/" + this.state.customerIdValue, {
       first_name: this.state.customerFirstNameValue,
       last_name: this.state.customerLastNameValue,
       username: this.state.customerUsernameValue,
@@ -427,10 +430,13 @@ class Customers extends Component {
       customerIdValue: undefined,
       customerDobValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  delete = () => {
-    api.delete("/" + this.state.customerIdValue);
+  delete = async () => {
+    await api.delete("/" + this.state.customerIdValue);
 
     this.setState({
       isExpanded: false,
@@ -444,6 +450,9 @@ class Customers extends Component {
       customerIdValue: undefined,
       customerDobValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
   componentDidMount() {

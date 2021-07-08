@@ -285,8 +285,8 @@ class Articles extends Component {
     });
   };
 
-  post = () => {
-    api.post("/", {
+  post = async () => {
+    await api.post("/", {
       name: this.state.articleNameValue,
       description: this.state.articleDescriptionValue,
       category: this.state.articleCategoryDrawerValue,
@@ -301,10 +301,13 @@ class Articles extends Component {
       articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  update = () => {
-    api.put("/" + this.state.articleIdValue, {
+  update = async () => {
+    await api.put("/" + this.state.articleIdValue, {
       name: this.state.articleNameValue,
       description: this.state.articleDescriptionValue,
       category: this.state.articleCategoryDrawerValue,
@@ -319,10 +322,13 @@ class Articles extends Component {
       articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  delete = () => {
-    api.delete("/" + this.state.articleIdValue);
+  delete = async () => {
+    await api.delete("/" + this.state.articleIdValue);
 
     this.setState({
       isExpanded: false,
@@ -333,6 +339,9 @@ class Articles extends Component {
       articleCategoryDrawerValue: undefined,
       articleIdValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
   componentDidMount() {

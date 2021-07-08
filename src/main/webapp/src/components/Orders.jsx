@@ -599,7 +599,7 @@ class Orders extends Component {
     });
   };
 
-  post = () => {
+  post = async () => {
     const orderArticleValueIds = this.state.orderArticleValue
       .map((article) =>
         this.state.articles.find((item) => {
@@ -610,7 +610,7 @@ class Orders extends Component {
         return { id: article.id };
       });
 
-    orderApi.post("/", {
+    await orderApi.post("/", {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
@@ -629,9 +629,12 @@ class Orders extends Component {
       orderIdValue: undefined,
       orderStatusDrawerValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  update = () => {
+  update = async () => {
     const orderArticleValueIds = this.state.orderArticleValue
       .map((article) =>
         this.state.articles.find((item) => {
@@ -642,7 +645,7 @@ class Orders extends Component {
         return { id: article.id };
       });
 
-    orderApi.put("/" + this.state.orderIdValue, {
+    await orderApi.put("/" + this.state.orderIdValue, {
       shipping: this.state.orderShippingDrawerValue,
       notes: this.state.orderNotesValue,
       status: this.state.orderStatusDrawerValue,
@@ -661,10 +664,13 @@ class Orders extends Component {
       orderIdValue: undefined,
       orderStatusDrawerValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
-  delete = () => {
-    orderApi.delete("/" + this.state.orderIdValue);
+  delete = async () => {
+    await orderApi.delete("/" + this.state.orderIdValue);
 
     this.setState({
       isExpanded: false,
@@ -677,6 +683,9 @@ class Orders extends Component {
       orderIdValue: undefined,
       orderStatusDrawerValue: undefined,
     });
+
+    this.fetch("0", "10");
+    this.getLength();
   };
 
   deleteSearch = () => {
