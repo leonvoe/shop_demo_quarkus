@@ -775,27 +775,6 @@ class Orders extends Component {
       isOpenOrderArticles,
     } = this.state;
 
-    let button;
-
-    if (!drawerEdit) {
-      button = (
-        <Button variant="primary" onClick={this.post}>
-          Add order
-        </Button>
-      );
-    } else {
-      button = (
-        <div>
-          <Button variant="primary" onClick={this.update}>
-            Edit order
-          </Button>
-          <Button variant="danger" onClick={this.delete} id="deleteButton">
-            Delete order
-          </Button>
-        </div>
-      );
-    }
-
     let rows;
 
     if (this.state.length !== 0) {
@@ -1029,7 +1008,22 @@ class Orders extends Component {
           </Select>
         </FormGroup>
 
-        <ActionGroup>{button}</ActionGroup>
+        <ActionGroup>
+          {!drawerEdit ? (
+            <Button variant="primary" onClick={this.post}>
+              Add order
+            </Button>
+          ) : (
+            <div>
+              <Button variant="primary" onClick={this.update}>
+                Edit order
+              </Button>
+              <Button variant="danger" onClick={this.delete} id="deleteButton">
+                Delete order
+              </Button>
+            </div>
+          )}
+        </ActionGroup>
       </Form>
     );
 

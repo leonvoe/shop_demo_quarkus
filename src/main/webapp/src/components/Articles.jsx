@@ -419,27 +419,6 @@ class Articles extends Component {
       categorySelected,
     } = this.state;
 
-    let button;
-
-    if (!drawerEdit) {
-      button = (
-        <Button variant="primary" onClick={this.post}>
-          Add article
-        </Button>
-      );
-    } else {
-      button = (
-        <div>
-          <Button variant="primary" onClick={this.update}>
-            Edit article
-          </Button>
-          <Button variant="danger" onClick={this.delete} id="deleteButton">
-            Delete article
-          </Button>
-        </div>
-      );
-    }
-
     let rows;
 
     if (this.state.length !== 0 && filteredArticles.length !== 0) {
@@ -577,7 +556,22 @@ class Articles extends Component {
           </FormSelect>
         </FormGroup>
 
-        <ActionGroup>{button}</ActionGroup>
+        <ActionGroup>
+          {!drawerEdit ? (
+            <Button variant="primary" onClick={this.post}>
+              Add article
+            </Button>
+          ) : (
+            <div>
+              <Button variant="primary" onClick={this.update}>
+                Edit article
+              </Button>
+              <Button variant="danger" onClick={this.delete} id="deleteButton">
+                Delete article
+              </Button>
+            </div>
+          )}
+        </ActionGroup>
       </Form>
     );
 

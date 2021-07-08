@@ -535,27 +535,6 @@ class Customers extends Component {
       helperTextPassword,
     } = this.state;
 
-    let button;
-
-    if (!drawerEdit) {
-      button = (
-        <Button variant="primary" onClick={this.post}>
-          Add customer
-        </Button>
-      );
-    } else {
-      button = (
-        <div>
-          <Button variant="primary" onClick={this.update}>
-            Edit customer
-          </Button>
-          <Button variant="danger" onClick={this.delete} id="deleteButton">
-            Delete customer
-          </Button>
-        </div>
-      );
-    }
-
     let rows;
 
     if (this.state.length !== 0 && filteredCustomers.length !== 0) {
@@ -757,7 +736,50 @@ class Customers extends Component {
           </FormSelect>
         </FormGroup>
 
-        <ActionGroup>{button}</ActionGroup>
+        <ActionGroup>
+          {drawerEdit ? (
+            <div>
+              <Button
+                isDisabled={
+                  (validatedDob === "success" || validatedDob === "default") &&
+                  (validatedFirstName === "success" ||
+                    validatedFirstName === "default") &&
+                  (validatedLastName === "success" ||
+                    validatedLastName === "default") &&
+                  (validatedPassword === "success" ||
+                    validatedPassword === "default")
+                    ? false
+                    : true
+                }
+                variant="primary"
+                onClick={this.update}
+              >
+                Edit customer
+              </Button>
+              <Button variant="danger" onClick={this.delete} id="deleteButton">
+                Delete customer
+              </Button>{" "}
+            </div>
+          ) : (
+            <Button
+              isDisabled={
+                (validatedDob === "success" || validatedDob === "default") &&
+                (validatedFirstName === "success" ||
+                  validatedFirstName === "default") &&
+                (validatedLastName === "success" ||
+                  validatedLastName === "default") &&
+                (validatedPassword === "success" ||
+                  validatedPassword === "default")
+                  ? false
+                  : true
+              }
+              variant="primary"
+              onClick={this.post}
+            >
+              Add customer
+            </Button>
+          )}
+        </ActionGroup>
       </Form>
     );
 
