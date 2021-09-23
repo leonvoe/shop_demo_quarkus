@@ -5,7 +5,9 @@ import io.quarkus.panache.common.Page;
 import org.acme.dto.OrderDTO;
 import org.acme.dto.OrderDTOMapper;
 import org.acme.dto.OrderEntityMapper;
-import org.acme.model.*;
+import org.acme.model.Order;
+import org.acme.model.Shipping;
+import org.acme.model.Status;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

@@ -1,8 +1,6 @@
 package org.acme.resource;
 
-import org.acme.dto.CustomerDTO;
 import org.acme.dto.OrderDTO;
-import org.acme.model.Customer;
 import org.acme.model.Order;
 import org.acme.service.OrderService;
 

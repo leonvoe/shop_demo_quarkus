@@ -1,11 +1,6 @@
 package org.acme.dto;
 
 import org.acme.model.Category;
-import org.acme.model.Order;
-
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import java.util.List;
 
 public class ArticleDTO {
     private Long id;

@@ -38,10 +38,14 @@
   margin-top: 4rem;
 }
 
-/* .pf-c-page {
+.pf-c-page {
   --pf-c-page__header--BackgroundColor: green;
+}
+
+.pf-c-page {
+  --pf-c-page__header--BackgroundColor: var(--pf-global--palette--red-100);
 }
 
 .pf-c-nav {
   --pf-c-nav__link--active--BackgroundColor: green;
-} */
+}

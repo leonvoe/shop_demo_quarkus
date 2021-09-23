@@ -2,12 +2,9 @@ package org.acme.service;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import org.acme.dto.ArticleDTO;
 import org.acme.dto.CustomerDTO;
 import org.acme.dto.CustomerDTOMapper;
 import org.acme.dto.CustomerEntityMapper;
-import org.acme.model.Article;
-import org.acme.model.Category;
 import org.acme.model.Customer;
 import org.acme.model.Gender;
 
@@ -15,9 +12,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.acme.model.Category.GAMES;
-import static org.acme.model.Category.MUSIC;
 
 @ApplicationScoped
 public class CustomerService {

@@ -1,6 +1,5 @@
 package org.acme.dto;
 
-import org.acme.model.Article;
 import org.acme.model.Order;
 import org.mapstruct.Mapper;
 

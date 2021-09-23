@@ -1,7 +1,5 @@
 package org.acme.dto;
 
-import org.acme.model.Article;
-import org.acme.model.Customer;
 import org.acme.model.Shipping;
 import org.acme.model.Status;
 
